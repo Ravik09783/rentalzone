@@ -2,31 +2,32 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/rental_logo.png"
+import '../App.css';
 
 export default function HeaderComponent() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+    <header className="bg-[#ed2939] shadow-md sticky top-0 z-50">
+      <div className="container mx-auto flex justify-between items-center py-2 px-6">
         {/* Logo */}
         {/* <h1 className="text-3xl font-bold text-blue-600">Just Rental Zone</h1> */}
         <img src={Logo} alt="logo" className="w-[60px]"/>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-8 text-lg font-medium">
+        <nav className="hidden md:flex space-x-8 text-lg font-medium decoration-none">
           <Link to="/" className="hover:text-blue-500 transition">Home</Link>
           <Link to="/about" className="hover:text-blue-500 transition">About</Link>
           <Link to="/services" className="hover:text-blue-500 transition">Services</Link>
           <Link to="/products" className="hover:text-blue-500 transition">Products</Link>
-          <Link to="/pricing" className="hover:text-blue-500 transition">Pricing</Link>
           <Link to="/contact" className="hover:text-blue-500 transition">Contact</Link>
+          <Link to="/bill" className="hover:text-blue-500 transition">Admin</Link>
         </nav>
 
         {/* Action Buttons */}
         <div className="hidden md:flex space-x-4">
-          <button className="px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition">Sign In</button>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Get Started</button>
+          <span className="px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:text-white transition">Sign In</span>
+          <span className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Get Started</span>
         </div>
 
         {/* Mobile Menu Button */}

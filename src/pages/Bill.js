@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import jsPDF from "jspdf";
 // import autoTable from "jspdf-autotable";
 
-
 const Bill = () => {
+  const adminEmail = 'admin@gmail.com'
+  const adminPassword = 'admin@123'
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [invoiceNo, setInvoiceNo] = useState("");
   const [invoiceDate, setInvoiceDate] = useState(
@@ -12,6 +13,11 @@ const Bill = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [isAdmin, setIsAdmin]= useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+
 
   const addItem = () => {
     setInvoiceItems([
@@ -20,11 +26,7 @@ const Bill = () => {
     ]);
   };
 
-  const handleInputChange = (
-    index,
-    field,
-    value
-  ) => {
+  const handleInputChange = (index, field, value) => {
     const updatedItems = invoiceItems.map((item, i) =>
       i === index
         ? {
@@ -44,74 +46,64 @@ const Bill = () => {
     return invoiceItems.reduce((sum, item) => sum + item.amount, 0);
   };
 
-  // const numberToWords = (num: number): string => {
-  //   // This is a simplified version - you might want to implement a more complete solution
-  //   const units = [
-  //     "",
-  //     "One",
-  //     "Two",
-  //     "Three",
-  //     "Four",
-  //     "Five",
-  //     "Six",
-  //     "Seven",
-  //     "Eight",
-  //     "Nine",
-  //   ];
-  //   const teens = [
-  //     "Ten",
-  //     "Eleven",
-  //     "Twelve",
-  //     "Thirteen",
-  //     "Fourteen",
-  //     "Fifteen",
-  //     "Sixteen",
-  //     "Seventeen",
-  //     "Eighteen",
-  //     "Nineteen",
-  //   ];
-  //   const tens = [
-  //     "",
-  //     "Ten",
-  //     "Twenty",
-  //     "Thirty",
-  //     "Forty",
-  //     "Fifty",
-  //     "Sixty",
-  //     "Seventy",
-  //     "Eighty",
-  //     "Ninety",
-  //   ];
-
-  //   if (num === 0) return "Zero";
-  //   if (num < 10) return units[num];
-  //   if (num < 20) return teens[num - 10];
-  //   if (num < 100) return tens[Math.floor(num / 10)] + " " + units[num % 10];
-  //   if (num < 1000)
-  //     return (
-  //       units[Math.floor(num / 100)] + " Hundred " + numberToWords(num % 100)
-  //     );
-  //   return "Amount in words: " + num; // Simplified for demo
-  // };
-
   const numberToWords = (num) => {
     if (num === 0) return "Zero Rupees Only";
-    
-    const units = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
-    const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-    const tens = ["", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    
+
+    const units = [
+      "",
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+      "Six",
+      "Seven",
+      "Eight",
+      "Nine",
+    ];
+    const teens = [
+      "Ten",
+      "Eleven",
+      "Twelve",
+      "Thirteen",
+      "Fourteen",
+      "Fifteen",
+      "Sixteen",
+      "Seventeen",
+      "Eighteen",
+      "Nineteen",
+    ];
+    const tens = [
+      "",
+      "Ten",
+      "Twenty",
+      "Thirty",
+      "Forty",
+      "Fifty",
+      "Sixty",
+      "Seventy",
+      "Eighty",
+      "Ninety",
+    ];
+
     const convertLessThanThousand = (n) => {
       if (n === 0) return "";
       if (n < 10) return units[n];
       if (n < 20) return teens[n - 10];
-      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + units[n % 10] : "");
-      return units[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertLessThanThousand(n % 100) : "");
+      if (n < 100)
+        return (
+          tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + units[n % 10] : "")
+        );
+      return (
+        units[Math.floor(n / 100)] +
+        " Hundred" +
+        (n % 100 !== 0 ? " " + convertLessThanThousand(n % 100) : "")
+      );
     };
-    
+
     const convert = (n) => {
       if (n === 0) return "Zero";
-      
+
       let result = "";
       const crore = Math.floor(n / 10000000);
       n %= 10000000;
@@ -121,7 +113,7 @@ const Bill = () => {
       n %= 1000;
       const hundred = Math.floor(n / 100);
       const remainder = n % 100;
-      
+
       if (crore > 0) {
         result += convertLessThanThousand(crore) + " Crore";
       }
@@ -129,18 +121,20 @@ const Bill = () => {
         result += (result ? " " : "") + convertLessThanThousand(lakh) + " Lakh";
       }
       if (thousand > 0) {
-        result += (result ? " " : "") + convertLessThanThousand(thousand) + " Thousand";
+        result +=
+          (result ? " " : "") + convertLessThanThousand(thousand) + " Thousand";
       }
       if (hundred > 0) {
-        result += (result ? " " : "") + convertLessThanThousand(hundred) + " Hundred";
+        result +=
+          (result ? " " : "") + convertLessThanThousand(hundred) + " Hundred";
       }
       if (remainder > 0) {
         result += (result ? " " : "") + convertLessThanThousand(remainder);
       }
-      
+
       return result;
     };
-    
+
     return convert(num) + " Rupees Only";
   };
 
@@ -155,18 +149,22 @@ const Bill = () => {
     // Mobile numbers vertically aligned with proper indentation
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text("Mob.: 7888915584", 140, 15); // First line with "Mob.:"
-    doc.text("7986584344", 150, 20); // Second number indented to align with numbers
-    doc.text("9872556139", 150, 25); // Third number indented to align with numbers
+    doc.setFont("helvetica", "bold");
+    doc.text("Mob.:", 160, 15);
+    doc.setFont("helvetica", "normal");
+    doc.text(" 7888915584", 169, 15);
+
+    doc.text("7986584344", 170, 20); // Second number indented to align with numbers
+    doc.text("9872556139", 170, 25); // Third number indented to align with numbers
 
     // Company name and details
-    doc.setFont("helvetica", "bold");
+    doc.setFont("times", "bold");
     doc.setFontSize(20);
-    doc.text("BHARDWAJ ELECTRICALS", 70, 35);
+    doc.text("BHARDWAJ ELECTRICALS", 61, 35);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
- 
+
     // Bold "Deals in :" label with normal text for the description
     doc.setFont("helvetica", "bold");
     doc.text("Deals in :", 14, 42);
@@ -245,8 +243,20 @@ const Bill = () => {
     doc.save(`invoice_${invoiceNo}.pdf`);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if(email === adminEmail && password === adminPassword){
+      setIsAdmin(true)
+    }
+
+    console.log("Email:", email);
+    console.log("Password:", password);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-5">
+    <>
+    { isAdmin && <div className="max-w-4xl mx-auto p-5">
       <h2 className="text-2xl font-bold mb-4">Invoice Generator</h2>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
@@ -384,7 +394,71 @@ const Bill = () => {
           </button>
         </div>
       </div>
+    </div>}
+
+    {!isAdmin && <>
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+      {/* Button to Open Modal */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700"
+      >
+        Open Login
+      </button>
+
+      {/* Modal Overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          {/* Modal Content */}
+          <div className="bg-white rounded-lg shadow-lg p-8 w-96 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">Login</h2>
+
+            {/* Login Form */}
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Password</label>
+                <input
+                  type="password"
+                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+              >
+                Login
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
+    </>}
+    </>
   );
 };
 

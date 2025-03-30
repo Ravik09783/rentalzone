@@ -6,6 +6,11 @@
   align-items: center;
 }
 
+a{
+  text-decoration: none!important;
+  color: #e0e0e0 !important;
+}
+
 .sortable-item {
   width: 100px;
   height: 100px;

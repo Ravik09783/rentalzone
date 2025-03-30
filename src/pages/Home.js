@@ -4,7 +4,7 @@ import Categories from "../components/Categories"
 
 export const Home = () => {
   return (
-    <div>
+    <div className="bg-black">
         <Categories />
     </div>
   )
