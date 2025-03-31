@@ -48,7 +48,7 @@ export default function HeaderComponent() {
           <Link to="/about" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>About</Link>
           <Link to="/services" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Services</Link>
           <Link to="/products" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Products</Link>
-          <Link to="/pricing" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Pricing</Link>
+          <Link to="/bill" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Admin</Link>
           <Link to="/contact" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Contact</Link>
           <button className="w-full px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition">Sign In</button>
           <button className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Get Started</button>
