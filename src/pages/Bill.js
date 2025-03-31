@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import jsPDF from "jspdf";
-// import autoTable from "jspdf-autotable";
 
 const Bill = () => {
   const adminEmail = 'admin@gmail.com'
@@ -17,12 +16,15 @@ const Bill = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
+  const [eventDate, setEventDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [enventVenue, setEventVenue] = useState('')
 
   const addItem = () => {
     setInvoiceItems([
       ...invoiceItems,
-      { description: "", qty: 1, rate: 0, amount: 0 },
+      { description: "", qty: 1, days: 1, rate: 0, amount: 0 },
     ]);
   };
 
@@ -33,8 +35,8 @@ const Bill = () => {
             ...item,
             [field]: value,
             amount:
-              field === "rate" || field === "qty"
-                ? item.qty * Number(value)
+              field === "rate" || field === "qty" || field === "days"
+                ? item.days * item.qty * (field === "rate" ? Number(value) : item.rate)
                 : item.amount,
           }
         : item
@@ -42,9 +44,39 @@ const Bill = () => {
     setInvoiceItems(updatedItems);
   };
 
-  const calculateTotal = () => {
-    return invoiceItems.reduce((sum, item) => sum + item.amount, 0);
+  const handleChange = (index, field, value) => {
+    setInvoiceItems((prevItems) => {
+      return prevItems.map((item, i) => {
+        if (i === index) {
+          const updatedItem = {
+            ...item,
+            [field]: value,
+          };
+  
+          // Ensure Days, Qty, and Rate are converted to numbers before calculation
+          const days = parseFloat(updatedItem.days) || 0;
+          const qty = parseFloat(updatedItem.qty) || 0;
+          const rate = parseFloat(updatedItem.rate) || 0;
+  
+          // Update the amount dynamically
+          updatedItem.amount = days * qty * rate;
+  
+          return updatedItem;
+        }
+        return item;
+      });
+    });
   };
+  
+
+  const calculateTotal = () => {
+    if (!invoiceItems || invoiceItems.length === 0) return 0;
+  console.log("Your invoice items", invoiceItems)
+    return invoiceItems.reduce((total, item) => {
+      return total + (parseFloat(item.qty) * parseFloat(item.rate)* parseFloat(item.days));
+    }, 0);
+  };
+  
 
   const numberToWords = (num) => {
     if (num === 0) return "Zero Rupees Only";
@@ -146,16 +178,13 @@ const Bill = () => {
     doc.setFontSize(12);
     doc.text("INVOICE", 14, 15);
 
-    // Mobile numbers vertically aligned with proper indentation
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
     doc.text("Mob.:", 160, 15);
     doc.setFont("helvetica", "normal");
     doc.text(" 7888915584", 169, 15);
-
-    doc.text("7986584344", 170, 20); // Second number indented to align with numbers
-    doc.text("9872556139", 170, 25); // Third number indented to align with numbers
+    doc.text("7986584344", 170, 20);
 
     // Company name and details
     doc.setFont("times", "bold");
@@ -165,59 +194,82 @@ const Bill = () => {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
 
-    // Bold "Deals in :" label with normal text for the description
+    // Deals in
     doc.setFont("helvetica", "bold");
     doc.text("Deals in :", 14, 42);
     doc.setFont("helvetica", "normal");
-    doc.text(
-      "Audio / Visual For Events/Conferences/ Exhibitions/Seminars",
-      35, // Adjusted x-position to align after "Deals in :"
-      42
-    );
+    doc.text("Audio / Visual For Events/Conferences/ Exhibitions/Seminars", 35, 42);
     doc.text("All Electrical Accessories Retail Trade", 14, 47);
-    // doc.text("Address: Shop No. - 3 Jamali Enclave Zirakpur Bhabat Road Mohali -140603", 14, 52);
-    // Bold Address label with normal text value
+
+    // Address
     doc.setFont("helvetica", "bold");
     doc.text("Address:", 14, 52);
     doc.setFont("helvetica", "normal");
-    doc.text(
-      "Shop No. - 3 Jamali Enclave Zirakpur Bhabat Road Mohali -140603",
-      35,
-      52
-    );
-    // doc.text("Email ID: bhardwajelectrical2023@gmail.com", 14, 57);
-    // Bold Email ID label with normal text value
+    doc.text("Shop No. - 3 Jarnail Enclave Zirakpur Bhabat Road Mohali -140603", 35, 52);
+
+    let yPos = 57; // Start from here to avoid overlaps
+
+    // Email ID
     doc.setFont("helvetica", "bold");
-    doc.text("Email ID:", 14, 57);
+    doc.text("Email ID:", 14, yPos);
     doc.setFont("helvetica", "normal");
-    doc.text("bhardwajelectrical2023@gmail.com", 35, 57);
+    doc.text("bhardwajelectrical2023@gmail.com", 35, yPos);
+    yPos += 8;
 
-    // Invoice details
-    doc.text(`Invoice No.: ${invoiceNo}`, 14, 67);
-    doc.text(`Invoice Date: ${invoiceDate}`, 14, 72);
-    doc.text(`M/s ${customerName}`, 100, 67);
-    doc.text(`Address: ${customerAddress}`, 100, 72);
-    doc.text(`Phone Number: ${customerPhone}`, 100, 77);
-
-    // Table header
+    // Event Date
     doc.setFont("helvetica", "bold");
-    doc.text("S.No.", 14, 87);
-    doc.text("DESCRIPTION", 30, 87);
-    doc.text("Qty.", 130, 87);
-    doc.text("Rate", 150, 87);
-    doc.text("Amount", 170, 87);
+    doc.text("Event Date:", 14, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(eventDate, 35, yPos);
+    yPos += 8;
+
+    // Event Venue
+    doc.setFont("helvetica", "bold");
+    doc.text("Event Venue:" + "  ", 14, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(enventVenue, 38, yPos);
+    yPos += 10;
+
+    // Invoice Details
+    doc.setFont("helvetica", "bold");
+    doc.text(`Invoice No.:`, 14, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(invoiceNo, 40, yPos);
+    yPos += 8;
+
+    doc.setFont("helvetica", "bold");
+    doc.text(`Invoice Date:`, 14, yPos);
+    doc.setFont("helvetica", "normal");
+    doc.text(invoiceDate, 40, yPos);
+    yPos += 8;
+
+    doc.text(`M/s ${customerName}`, 100, yPos - 16);
+    doc.text(`Address: ${customerAddress}`, 100, yPos - 8);
+    doc.text(`Phone Number: ${customerPhone}`, 100, yPos);
+    yPos += 10;
+
+    // Table Header
+    doc.setFont("helvetica", "bold");
+    doc.text("S.No.", 14, yPos);
+    doc.text("DESCRIPTION", 30, yPos);
+    doc.text("Days", 100, yPos);  // Added Days column
+    doc.text("Qty.", 120, yPos);
+    doc.text("Rate", 140, yPos);
+    doc.text("Amount", 170, yPos);
+    yPos += 3;
 
     // Draw horizontal line
-    doc.line(14, 90, 190, 90);
+    doc.line(14, yPos, 190, yPos);
+    yPos += 5;
 
     // Table content
-    let yPos = 95;
     invoiceItems.forEach((item, index) => {
       doc.setFont("helvetica", "normal");
       doc.text((index + 1).toString(), 14, yPos);
       doc.text(item.description, 30, yPos);
-      doc.text(item.qty.toString(), 130, yPos);
-      doc.text(item.rate.toString(), 150, yPos);
+      doc.text(item.days.toString(), 100, yPos);  // Added Days value
+      doc.text(item.qty.toString(), 120, yPos);
+      doc.text(item.rate.toString(), 140, yPos);
       doc.text(item.amount.toString(), 170, yPos);
       yPos += 7;
     });
@@ -226,7 +278,7 @@ const Bill = () => {
     doc.setFont("helvetica", "bold");
     doc.line(14, yPos, 190, yPos);
     yPos += 7;
-    doc.text("Total", 130, yPos);
+    doc.text("Total", 140, yPos);
     doc.text(calculateTotal().toString(), 170, yPos);
     yPos += 10;
 
@@ -279,6 +331,25 @@ const Bill = () => {
           />
         </div>
         <div>
+          <label className="block mb-1">Event Vanue</label>
+          <input
+            type="text"
+            value={enventVenue}
+            onChange={(e) => setEventVenue(e.target.value)}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Event Date</label>
+          <input
+            type="text"
+            value={eventDate}
+            onChange={(e) => setEventDate(e.target.value)}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        <div>
           <label className="block mb-1">Customer Name (M/s)</label>
           <input
             type="text"
@@ -312,6 +383,7 @@ const Bill = () => {
           <tr className="bg-gray-200">
             <th className="border px-2 py-1 w-10">S.No</th>
             <th className="border px-2 py-1">Description</th>
+            <th className="border px-2 py-1 w-20">Days</th>
             <th className="border px-2 py-1 w-20">Qty</th>
             <th className="border px-2 py-1 w-20">Rate</th>
             <th className="border px-2 py-1 w-20">Amount</th>
@@ -334,10 +406,17 @@ const Bill = () => {
               <td className="border px-2 py-1">
                 <input
                   type="number"
+                  value={item.days}
+                    onChange={(e) => handleChange(index, "days", e.target.value)}
+                  className="w-full p-1 text-center"
+                  min="1"
+                />
+              </td>
+              <td className="border px-2 py-1">
+                <input
+                  type="number"
                   value={item.qty}
-                  onChange={(e) =>
-                    handleInputChange(index, "qty", Number(e.target.value))
-                  }
+                    onChange={(e) => handleChange(index, "qty", e.target.value)}
                   className="w-full p-1 text-center"
                 />
               </td>
@@ -345,9 +424,7 @@ const Bill = () => {
                 <input
                   type="number"
                   value={item.rate}
-                  onChange={(e) =>
-                    handleInputChange(index, "rate", Number(e.target.value))
-                  }
+                    onChange={(e) => handleChange(index, "rate", e.target.value)}
                   className="w-full p-1 text-center"
                 />
               </td>
@@ -357,7 +434,7 @@ const Bill = () => {
         </tbody>
         <tfoot>
           <tr className="bg-gray-100">
-            <td colSpan={4} className="border px-2 py-1 text-right font-bold">
+            <td colSpan={5} className="border px-2 py-1 text-right font-bold">
               Total
             </td>
             <td className="border px-2 py-1 text-center font-bold">
@@ -398,7 +475,6 @@ const Bill = () => {
 
     {!isAdmin && <>
       <div className="flex items-center justify-center h-screen bg-gray-100">
-      {/* Button to Open Modal */}
       <button
         onClick={() => setIsOpen(true)}
         className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700"
@@ -406,12 +482,9 @@ const Bill = () => {
         Open Login
       </button>
 
-      {/* Modal Overlay */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          {/* Modal Content */}
           <div className="bg-white rounded-lg shadow-lg p-8 w-96 relative">
-            {/* Close Button */}
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
@@ -421,7 +494,6 @@ const Bill = () => {
 
             <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">Login</h2>
 
-            {/* Login Form */}
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Email</label>
@@ -445,7 +517,6 @@ const Bill = () => {
                 />
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
