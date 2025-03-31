@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import jsPDF from "jspdf";
 
 const Bill = () => {
-  const adminEmail = 'admin@gmail.com'
+  const adminEmail = ['admin@gmail.com', 'ritu@gmail.com', 'rohit@gmail.com', 'ravi@gmail.com']
   const adminPassword = 'admin@123'
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [invoiceNo, setInvoiceNo] = useState("");
@@ -298,7 +298,7 @@ const Bill = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(email === adminEmail && password === adminPassword){
+    if(adminEmail.includes(email) && password === adminPassword){
       setIsAdmin(true)
     }
 

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HeaderComponent from './components/Header';
 import { Home } from './pages/Home';
-import { About } from './pages/About';
+import  About  from './pages/About';
 import Contact from './pages/Contact';
 import Bill from './pages/Bill';
 

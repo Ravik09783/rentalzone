@@ -17,7 +17,7 @@ export default function HeaderComponent() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8 text-lg font-medium decoration-none">
           <Link to="/" className="hover:text-blue-500 transition">Home</Link>
-          <Link to="/about" className="hover:text-blue-500 transition">About</Link>
+          <Link to="/about" className="hover:text-blue-500 transition">About me</Link>
           <Link to="/services" className="hover:text-blue-500 transition">Services</Link>
           <Link to="/products" className="hover:text-blue-500 transition">Products</Link>
           <Link to="/contact" className="hover:text-blue-500 transition">Contact</Link>
@@ -45,7 +45,7 @@ export default function HeaderComponent() {
       >
         <nav className="text-center space-y-4 text-lg font-medium">
           <Link to="/" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Home</Link>
-          <Link to="/about" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>About</Link>
+          <Link to="/about" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>About me</Link>
           <Link to="/services" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Services</Link>
           <Link to="/products" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Products</Link>
           <Link to="/bill" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Admin</Link>
