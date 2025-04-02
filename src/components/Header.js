@@ -8,7 +8,7 @@ export default function HeaderComponent() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="bg-[#ed2939] shadow-md sticky top-0 z-50">
+    <header className="bg-yellow-500 shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center py-2 px-6">
         {/* Logo */}
         {/* <h1 className="text-3xl font-bold text-blue-600">Just Rental Zone</h1> */}
