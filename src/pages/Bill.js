@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import jsPDF from "jspdf";
+import ganesha from "../assets/base64/base64";
 
 const Bill = () => {
   const adminEmail = ['admin@gmail.com', 'ritu@gmail.com', 'rohit@gmail.com', 'ravi@gmail.com']
@@ -19,7 +20,8 @@ const Bill = () => {
   const [eventDate, setEventDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [enventVenue, setEventVenue] = useState('')
+  const [enventVenue, setEventVenue] = useState('');
+  const imgData = ganesha;
 
   const addItem = () => {
     setInvoiceItems([
@@ -177,6 +179,18 @@ const Bill = () => {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.text("INVOICE", 14, 15);
+  // Convert 80px to mm (assuming 96dpi: 1px ≈ 0.264583mm)
+  const pxToMm = 0.264583;
+  const imgWidth = 80 * pxToMm;  // ≈ 21.17mm
+  const imgHeight = 80 * pxToMm; // ≈ 21.17mm
+  
+  // Calculate centered position
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const imgX = (pageWidth - imgWidth) / 2;
+  
+  // Add image with 80px × 80px dimensions
+  doc.addImage(imgData, 'JPEG', imgX, 5, imgWidth, imgHeight);
+
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
