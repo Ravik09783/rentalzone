@@ -1,7 +1,6 @@
 import React from 'react';
 import "react-image-gallery/styles/css/image-gallery.css";
 import ImageGallery from "react-image-gallery";
-import MobileStickyContact from '../components/MobileStickyContact';
 
 
 const images = [
@@ -21,7 +20,6 @@ const images = [
 const Gallery = () => {
   return (
     <div className='h-[400px] my-5'>
-      <MobileStickyContact />
         <ImageGallery items={images} />;
     </div>
   )

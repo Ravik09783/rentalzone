@@ -9,11 +9,13 @@ import Bill from "./pages/Bill";
 import Services from "./pages/Services";
 import Products from "./pages/Products";
 import Gallery from "./pages/Gallery";
+import MobileStickyContact from "./components/MobileStickyContact";
 
 function App() {
   return (
     <BrowserRouter>
       <HeaderComponent />
+      <MobileStickyContact />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="about" element={<About />} />

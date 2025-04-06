@@ -1,8 +1,6 @@
 import React from 'react';
 import { FiCheckCircle, FiMic, FiMonitor, FiSpeaker, FiVideo, FiWifi } from 'react-icons/fi';
-import { TbSettingsAutomation } from "react-icons/tb";
 
-import MobileStickyContact from '../components/MobileStickyContact';
 
 const Services = () => {
   const serviceCategories = [
@@ -88,7 +86,6 @@ const Services = () => {
 
   return (
     <section className="py-20 bg-gray-50" id="services">
-      <MobileStickyContact />
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
