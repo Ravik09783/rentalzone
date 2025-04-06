@@ -207,13 +207,13 @@ const MobileStickyContact = () => {
                   Call Directly
                 </h4>
                 <div className="space-y-2">
-                  <a
+                  {/* <a
                     href="tel:7888915584"
                     className="flex items-center justify-between p-3 bg-white rounded-lg hover:bg-indigo-50 transition border border-gray-100"
                   >
                     <span className="text-gray-800 font-medium">+91 78889 15584</span>
                     <FiChevronRight className="text-gray-400" />
-                  </a>
+                  </a> */}
                   <a
                     href="tel:7986584344"
                     className="flex items-center justify-between p-3 bg-white rounded-lg hover:bg-indigo-50 transition border border-gray-100"
@@ -234,7 +234,7 @@ const MobileStickyContact = () => {
                 <div className="grid grid-cols-3 gap-2">
                   {/* WhatsApp */}
                   <a
-                    href="https://wa.me/917888915584"
+                    href="https://wa.me/917986584344"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex flex-col items-center p-3 bg-[#fff] bg-opacity-10 rounded-lg hover:bg-opacity-20 transition border border-green-100"
@@ -286,7 +286,7 @@ const MobileStickyContact = () => {
               </motion.div>
 
               {/* Social Media Follow */}
-              <motion.div 
+              {/* <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -311,7 +311,7 @@ const MobileStickyContact = () => {
                     <FaFacebook className="text-xl" />
                   </a>
                 </div>
-              </motion.div>
+              </motion.div> */}
             </div>
           </motion.div>
         )}

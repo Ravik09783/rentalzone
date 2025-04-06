@@ -1,5 +1,7 @@
 import React from 'react';
 import { FiCheckCircle, FiMic, FiMonitor, FiSpeaker, FiVideo, FiWifi } from 'react-icons/fi';
+import { TbSettingsAutomation } from "react-icons/tb";
+
 import MobileStickyContact from '../components/MobileStickyContact';
 
 const Services = () => {
@@ -145,10 +147,11 @@ const Services = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="flex flex-col items-center text-center">
-                <div className="bg-white bg-opacity-20 p-4 rounded-full mb-4">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-white bg-opacity-20 p-4 rounded-full ">
+                <FiCheckCircle className="text-4xl mb-4 text-indigo-600" />
+                  {/* <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
+                  </svg> */}
                 </div>
                 <h4 className="text-xl font-semibold mb-2">Premium Equipment</h4>
                 <p className="text-purple-100">Only professional-grade gear from trusted brands</p>
