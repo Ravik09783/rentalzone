@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import jsPDF from "jspdf";
 import ganesha from "../assets/base64/base64";
+import MobileStickyContact from "../components/MobileStickyContact";
 
 const Bill = () => {
   const adminEmail = ['admin@gmail.com', 'ritu@gmail.com', 'rohit@gmail.com', 'ravi@gmail.com']
@@ -492,6 +493,7 @@ const Bill = () => {
 
   return (
     <>
+      <MobileStickyContact />
     { isAdmin && <div className="max-w-4xl mx-auto p-5">
       <h2 className="text-2xl font-bold mb-4">Invoice Generator</h2>
 

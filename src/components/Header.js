@@ -26,10 +26,10 @@ export default function HeaderComponent() {
         </nav>
 
         {/* Action Buttons */}
-        <div className="hidden md:flex space-x-4">
+        {/* <div className="hidden md:flex space-x-4">
           <span className="px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:text-white transition">Sign In</span>
           <span className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Get Started</span>
-        </div>
+        </div> */}
 
         {/* Mobile Menu Button */}
         <button 
@@ -42,7 +42,7 @@ export default function HeaderComponent() {
 
       {/* Mobile Navigation */}
       <div 
-        className={`md:hidden bg-gray-100 transition-all duration-300 ease-in-out ${isOpen ? "max-h-96 py-4" : "max-h-0 overflow-hidden"}`}
+        className={`md:hidden bg-yellow-600 transition-all duration-300 ease-in-out ${isOpen ? "max-h-96 py-4" : "max-h-0 overflow-hidden"}`}
       >
         <nav className="text-center space-y-4 text-lg font-medium">
           <Link to="/" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Home</Link>
@@ -51,8 +51,8 @@ export default function HeaderComponent() {
           <Link to="/products" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Products</Link>
           <Link to="/bill" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Admin</Link>
           <Link to="/contact" className="block hover:text-blue-500" onClick={() => setIsOpen(false)}>Contact</Link>
-          <button className="w-full px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition">Sign In</button>
-          <button className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Get Started</button>
+          {/* <button className="w-full px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition">Sign In</button>
+          <button className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Get Started</button> */}
         </nav>
       </div>
     </header>

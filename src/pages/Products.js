@@ -234,12 +234,16 @@
 
 import React from 'react';
 import { FiCheck, FiShoppingCart, FiHeadphones, FiMonitor, FiMic, FiVideo, FiCpu } from 'react-icons/fi';
+import { TfiVideoCamera } from "react-icons/tfi";
+import MobileStickyContact from '../components/MobileStickyContact';
+
 
 const Products = () => {
   const productCategories = [
     {
       name: "Audio Equipment",
       icon: <FiHeadphones className="text-4xl text-purple-600" />,
+      color:'text-purple-600',
       cardClass: "border-t-4 border-purple-500 hover:border-purple-600 hover:bg-purple-50",
       buttonClass: "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded md:rounded-lg",
       items: [
@@ -266,6 +270,7 @@ const Products = () => {
     {
       name: "TV Rentals",
       icon: <FiMonitor className="text-4xl text-blue-600" />,
+      color: 'text-blue-600',
       cardClass: "border-t-4 border-blue-500 hover:border-blue-600 hover:bg-blue-50",
       buttonClass: "bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 rounded md:rounded-lg",
       items: [
@@ -310,8 +315,9 @@ const Products = () => {
     },
     {
       name: "Projection Systems",
-      icon: <FiMonitor className="text-4xl text-blue-600" />,
-      cardClass: "border-t-4 border-blue-500 hover:border-blue-600 hover:bg-blue-50 rounded md:rounded-lg",
+      icon: <TfiVideoCamera  className="text-4xl text-[hotpink]" />,
+      color:'text-[hotpink]',
+      cardClass: "border-t-4 border-[hotpink] hover:border-[hotpink] hover:bg-[hotpink] rounded md:rounded-lg",
       buttonClass: "bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700",
       items: [
         {
@@ -337,6 +343,7 @@ const Products = () => {
     {
       name: "Lighting Systems",
       icon: <FiVideo className="text-4xl text-yellow-600" />,
+      color:'text-yellow-600',
       cardClass: "border-t-4 border-yellow-500 hover:border-yellow-600 hover:bg-yellow-50",
       buttonClass: "bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 rounded md:rounded-lg",
       items: [
@@ -363,6 +370,7 @@ const Products = () => {
     {
       name: "Conference Equipment",
       icon: <FiMic className="text-4xl text-green-600" />,
+      color:'text-green-600',
       cardClass: "border-t-4 border-green-500 hover:border-green-600 hover:bg-green-50",
       buttonClass: "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded md:rounded-lg",
       items: [
@@ -389,6 +397,7 @@ const Products = () => {
     {
       name: "Computer Rentals",
       icon: <FiCpu className="text-4xl text-red-600" />,
+      color:'text-red-600',
       cardClass: "border-t-4 border-red-500 hover:border-red-600 hover:bg-red-50",
       buttonClass: "bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 rounded md:rounded-lg",
       items: [
@@ -416,6 +425,7 @@ const Products = () => {
 
   return (
     <section className="py-16 bg-gray-50">
+      <MobileStickyContact />
       <div className="container mx-auto px-4">
         {/* Page Header */}
         <div className="text-center mb-16">

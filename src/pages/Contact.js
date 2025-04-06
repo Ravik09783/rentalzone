@@ -77,10 +77,12 @@
 
 
 import { FiMapPin, FiPhone, FiMail, FiInstagram, FiFacebook, FiClock } from 'react-icons/fi';
+import MobileStickyContact from '../components/MobileStickyContact';
 
 export default function Contact() {
   return (
     <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50" id="contact">
+      <MobileStickyContact />
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header Section */}
         <div className="text-center mb-16">

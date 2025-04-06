@@ -87,10 +87,12 @@
 
 
 import React from 'react';
+import MobileStickyContact from '../components/MobileStickyContact';
 
 const About = () => {
   return (
     <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50" id="about">
+      <MobileStickyContact />
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
           {/* Image Section */}
