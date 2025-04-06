@@ -40,6 +40,10 @@ a{
   animation: shimmer 1.5s infinite;
 }
 
+button{
+  border-radius: 5px;
+}
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
