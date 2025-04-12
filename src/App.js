@@ -10,6 +10,7 @@ import Services from "./pages/Services";
 import Products from "./pages/Products";
 import Gallery from "./pages/Gallery";
 import MobileStickyContact from "./components/MobileStickyContact";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="products" element={<Products />} />
         <Route path="gallery" element={<Gallery />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

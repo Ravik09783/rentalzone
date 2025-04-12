@@ -1,23 +1,16 @@
 import React, { useState } from "react";
 import jsPDF from "jspdf";
 import ganesha from "../assets/base64/base64";
-import Quotaition from "../components/Quotaition";
 
-const Bill = () => {
-  const adminEmail = 1223334444
+const Quotaition = () => {
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [invoiceNo, setInvoiceNo] = useState("");
   const [invoiceDate, setInvoiceDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [error, setError] = useState('')
   const [customerName, setCustomerName] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [isAdmin, setIsAdmin]= useState(false);
-  const [email, setEmail] = useState("");
-  const [activeTab, setActiveTab] = useState('tab1');
-  const [isOpen, setIsOpen] = useState(false);
   const [eventDate, setEventDate] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -173,151 +166,42 @@ const Bill = () => {
     return convert(num) + " Rupees Only";
   };
 
-  // const generatePDF = () => {
-  //   const doc = new jsPDF();
 
-  //   // Header with contact numbers
-  //   doc.setFont("helvetica", "bold");
-  //   doc.setFontSize(12);
-  //   doc.text("INVOICE", 14, 15);
-  // // Convert 80px to mm (assuming 96dpi: 1px ≈ 0.264583mm)
-  // const pxToMm = 0.264583;
-  // const imgWidth = 80 * pxToMm;  // ≈ 21.17mm
-  // const imgHeight = 80 * pxToMm; // ≈ 21.17mm
-  
-  // // Calculate centered position
-  // const pageWidth = doc.internal.pageSize.getWidth();
-  // const imgX = (pageWidth - imgWidth) / 2;
-  
-  // // Add image with 80px × 80px dimensions
-  // doc.addImage(imgData, 'JPEG', imgX, 5, imgWidth, imgHeight);
-
-
-  //   doc.setFont("helvetica", "normal");
-  //   doc.setFontSize(10);
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Mob.:", 160, 15);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(" 7888915584", 169, 15);
-  //   doc.text("7986584344", 170, 20);
-
-  //   // Company name and details
-  //   doc.setFont("times", "bold");
-  //   doc.setFontSize(20);
-  //   doc.text("BHARDWAJ ELECTRICALS", 61, 35);
-
-  //   doc.setFont("helvetica", "normal");
-  //   doc.setFontSize(10);
-
-  //   // Deals in
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Deals in :", 14, 42);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text("Audio / Visual For Events/Conferences/ Exhibitions/Seminars", 35, 42);
-  //   doc.text("All Electrical Accessories Retail Trade", 14, 47);
-
-  //   // Address
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Address:", 14, 52);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text("Shop No. - 3 Jarnail Enclave Zirakpur Bhabat Road Mohali -140603", 35, 52);
-
-  //   let yPos = 57; // Start from here to avoid overlaps
-
-  //   // Email ID
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Email ID:", 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text("bhardwajelectrical2023@gmail.com", 35, yPos);
-  //   yPos += 8;
-
-  //   // Event Date
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Event Date:", 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(eventDate, 35, yPos);
-  //   yPos += 8;
-
-  //   // Event Venue
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Event Venue:" + "  ", 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(enventVenue, 38, yPos);
-  //   yPos += 10;
-
-  //   // Invoice Details
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text(`Invoice No.:`, 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(invoiceNo, 40, yPos);
-  //   yPos += 8;
-
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text(`Invoice Date:`, 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(invoiceDate, 40, yPos);
-  //   yPos += 8;
-
-  //   doc.text(`M/s ${customerName}`, 100, yPos - 16);
-  //   doc.text(`Address: ${customerAddress}`, 100, yPos - 8);
-  //   doc.text(`Phone Number: ${customerPhone}`, 100, yPos);
-  //   yPos += 10;
-
-  //   // Table Header
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("S.No.", 14, yPos);
-  //   doc.text("DESCRIPTION", 30, yPos);
-  //   doc.text("Days", 100, yPos);  // Added Days column
-  //   doc.text("Qty.", 120, yPos);
-  //   doc.text("Rate", 140, yPos);
-  //   doc.text("Amount", 170, yPos);
-  //   yPos += 3;
-
-  //   // Draw horizontal line
-  //   doc.line(14, yPos, 190, yPos);
-  //   yPos += 5;
-
-  //   // Table content
-  //   invoiceItems.forEach((item, index) => {
-  //     doc.setFont("helvetica", "normal");
-  //     doc.text((index + 1).toString(), 14, yPos);
-  //     doc.text(item.description, 30, yPos);
-  //     doc.text(item.days.toString(), 100, yPos);  // Added Days value
-  //     doc.text(item.qty.toString(), 120, yPos);
-  //     doc.text(item.rate.toString(), 140, yPos);
-  //     doc.text(item.amount.toString(), 170, yPos);
-  //     yPos += 7;
-  //   });
-
-  //   // Total line
-  //   doc.setFont("helvetica", "bold");
-  //   doc.line(14, yPos, 190, yPos);
-  //   yPos += 7;
-  //   doc.text("Total", 140, yPos);
-  //   doc.text(calculateTotal().toString(), 170, yPos);
-  //   yPos += 10;
-
-  //   // Rupees in words
-  //   doc.text(`Rupees in words: ${numberToWords(calculateTotal())}`, 14, yPos);
-  //   yPos += 15;
-
-  //   // Footer
-  //   doc.text("E. & O. E.", 14, yPos);
-  //   doc.text("Terms & Conditions:", 14, yPos + 5);
-  //   doc.text("For BHARDWAJ ELECTRICALS", 130, yPos);
-  //   doc.text("Signature", 167, yPos + 8);
-
-  //   doc.save(`invoice_${invoiceNo}.pdf`);
-  // };
-
-
-  const generatePDF = () => {
+const generatePDF = () => {
     const doc = new jsPDF();
+
+    // Function to add watermark to current page
+    const addWatermark = () => {
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        
+        // Watermark settings
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(50);
+        doc.setTextColor(230, 230, 230); // Light gray
+        
+        // Calculate center position
+        const centerX = pageWidth / 2;
+        const centerY = pageHeight / 2;
+        
+        // Draw single centered watermark
+        doc.text("QUOTATION", centerX, centerY, {
+            angle: 45,
+            align: 'center'
+        });
+        
+        // Reset text settings
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+    };
+
+    // Add watermark to first page
+    addWatermark();
 
     // Header with contact numbers
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.text("INVOICE", 14, 15);
+    doc.text("Quotation", 14, 15);
     
     // Add logo/image
     const pxToMm = 0.264583;
@@ -381,13 +265,13 @@ const Bill = () => {
 
     // Invoice Details
     doc.setFont("helvetica", "bold");
-    doc.text(`Invoice No.:`, 14, yPos);
+    doc.text(`Quotation No.:`, 14, yPos);
     doc.setFont("helvetica", "normal");
     doc.text(invoiceNo, 40, yPos);
     yPos += 8;
 
     doc.setFont("helvetica", "bold");
-    doc.text(`Invoice Date:`, 14, yPos);
+    doc.text(`Quotation Date:`, 14, yPos);
     doc.setFont("helvetica", "normal");
     doc.text(invoiceDate, 40, yPos);
     yPos += 8;
@@ -441,96 +325,54 @@ const Bill = () => {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     
-    const terms = [
-      "1. Payment is due within 7 days from invoice date.",
-      "2. Interest @18% p.a. will be charged on overdue payments.",
-      "3. Goods once sold will not be taken back.",
-      "4. All disputes subject to Mohali jurisdiction only.",
-      "5. Rental equipment must be returned in same condition as delivered.",
-      "6. Security deposit is refundable after equipment return and inspection.",
-      "7. Client is responsible for any damage/loss during rental period.",
-      "8. Prices inclusive of all taxes unless specified otherwise.",
-      "9. Payment via NEFT/RTGS/Cheque in favor of BHARDWAJ ELECTRICALS.",
-      "10. Original invoice must be produced for any service claims.",
-      "11. Installation charges extra unless specifically mentioned.",
-      "12. Weekend/holiday rates may apply for event support services."
-    ];
+     const terms = [
+        "1. This quotation is valid for 30 days from the date of issue.",
+        "2. The company reserves the right to cancel this quotation at any time without prior notice.",
+        "3. Payment is due within 7 days from invoice date.",
+        "4. Interest @18% p.a. will be charged on overdue payments.",
+        "5. Goods once sold will not be taken back.",
+        "6. All disputes subject to Mohali jurisdiction only.",
+        "7. Rental equipment must be returned in same condition as delivered.",
+        "8. Security deposit is refundable after equipment return and inspection.",
+        "9. Client is responsible for any damage/loss during rental period.",
+        "10. Prices inclusive of all taxes unless specified otherwise.",
+        "11. Payment via NEFT/RTGS/Cheque in favor of BHARDWAJ ELECTRICALS.",
+        "12. Original invoice must be produced for any service claims.",
+        "13. Installation charges extra unless specifically mentioned.",
+        "14. Weekend/holiday rates may apply for event support services.",
+      ];
 
-    
     terms.forEach(term => {
       if(yPos > 270) { // Check if we need a new page
         doc.addPage();
         yPos = 20;
+        addWatermark(); // Add watermark to new page
       }
       doc.text(term, 16, yPos += 6);
     });
 
     // Footer
     doc.setFontSize(10);
-    yPos += 10;
-    doc.text("E. & O. E.", 14, yPos);
-    doc.text("For BHARDWAJ ELECTRICALS", 130, yPos);
+    const pageHeight = doc.internal.pageSize.getHeight();
     
-    // Signature line
+    // Fixed position for "E. & O. E." (left side)
+    doc.text("E. & O. E.", 14, pageHeight - 20);
+    
+    // Fixed position for company stamp (right side)
+    doc.text("For BHARDWAJ ELECTRICALS", pageWidth - 60, pageHeight - 20);
+    
+    // Signature line (fixed position relative to page bottom)
     doc.setFontSize(12);
-    yPos += 15;
-    doc.line(130, yPos, 190, yPos);
-    doc.text("Authorized Signatory", 150, yPos + 5);
+    const signatureY = pageHeight - 10;
+    doc.line(pageWidth - 60, signatureY, pageWidth - 10, signatureY);
+    doc.text("Authorized Signatory", pageWidth - 45, signatureY + 5);
 
-    doc.save(`invoice_${invoiceNo}.pdf`);
+    doc.save(`quotation_${invoiceNo}.pdf`);  // Changed filename to quotation_
 };
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("I am called janu", email)
-    if(adminEmail== email){
-      setIsAdmin(true)
-    }else{
-      setError("You have entered the wrong PIN")
-    }
-
-  };
-
   return (
     <>
-    
-    { isAdmin && <div className="max-w-4xl mx-auto p-5">
-
-      <div className="relative inline-flex bg-gray-200 rounded-full p-1 w-full max-w-md shadow-md">
-  {/* Sliding background */}
-  <span
-    className={`absolute top-1 left-1 h-[90%] w-1/2 bg-white rounded-full shadow transition-all duration-300 ease-in-out
-      ${activeTab === 'tab2' ? 'translate-x-full' : 'translate-x-0'}`}
-  ></span>
-
-  {/* Buttons */}
-  <button
-    className={`relative z-10 w-1/2 py-2 px-4 text-sm sm:text-base font-medium transition-all duration-300 rounded-full
-      ${activeTab === 'tab1' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-500'}`}
-    onClick={() => setActiveTab('tab1')}
-  >
-    Create Invoice
-  </button>
-  <button
-    className={`relative z-10 w-1/2 py-2 px-4 text-sm sm:text-base font-medium transition-all duration-300 rounded-full
-      ${activeTab === 'tab2' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-500'}`}
-    onClick={() => setActiveTab('tab2')}
-  >
-    Create Quotation
-  </button>
-</div>
-
-
-
-
-
-
-
-
-
-      {activeTab==='tab1' &&<>
-      <h2 className="text-2xl font-bold mb-4">Invoice Generator</h2>
+     <div className="max-w-4xl mx-auto ">
+      <h2 className="text-2xl font-bold mb-4">Quotation Generator</h2>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div>
@@ -688,74 +530,13 @@ const Bill = () => {
             onClick={generatePDF}
             className="bg-green-500 text-white px-4 py-2 ml-2 rounded"
           >
-            Download PDF
+            Download Quotation
           </button>
         </div>
       </div>
-    </>}
-    {activeTab==='tab2' && <Quotaition />}
     </div>
-    }
-
-    {!isAdmin && <>
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-      <button
-        onClick={() => setIsOpen(true)}
-        className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700"
-      >
-        Admin Login
-      </button>
-
-      {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-96 relative">
-            <button
-              onClick={() => setIsOpen(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-            >
-              ✕
-            </button>
-
-            <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">Login</h2>
-
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Enter your Pin</label>
-                <input
-                  type="password"
-                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your Pin"
-                  value={email}
-                  onChange={(e) => {setEmail(e.target.value); setError('')}}
-                />
-                {error && <p className="text-[red]">{error}</p>}
-              </div>
-
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700">Password</label>
-                <input
-                  type="password"
-                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div> */}
-
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-              >
-                Login
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-    </>}
     </>
   );
 };
 
-export default Bill;
+export default Quotaition;
