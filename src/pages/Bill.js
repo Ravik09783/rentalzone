@@ -2,26 +2,39 @@ import React, { useState } from "react";
 import jsPDF from "jspdf";
 import ganesha from "../assets/base64/base64";
 import Quotaition from "../components/Quotaition";
+import {
+  FaFileInvoice,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaUser,
+  FaPhone,
+  FaAddressCard,
+  FaPlus,
+  FaDownload,
+} from "react-icons/fa";
 
 const Bill = () => {
-  const adminEmail = 1223334444
+  const adminEmail = 1223334444;
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [invoiceNo, setInvoiceNo] = useState("");
   const [invoiceDate, setInvoiceDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [error, setError] = useState('')
+  const [error, setError] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [isAdmin, setIsAdmin]= useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState("");
-  const [activeTab, setActiveTab] = useState('tab1');
+  const [activeTab, setActiveTab] = useState("tab1");
   const [isOpen, setIsOpen] = useState(false);
+  const [showCoinRain, setShowCoinRain] = useState(false);
+
+
   const [eventDate, setEventDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [enventVenue, setEventVenue] = useState('');
+  const [enventVenue, setEventVenue] = useState("");
   const imgData = ganesha;
 
   const addItem = () => {
@@ -39,7 +52,9 @@ const Bill = () => {
             [field]: value,
             amount:
               field === "rate" || field === "qty" || field === "days"
-                ? item.days * item.qty * (field === "rate" ? Number(value) : item.rate)
+                ? item.days *
+                  item.qty *
+                  (field === "rate" ? Number(value) : item.rate)
                 : item.amount,
           }
         : item
@@ -55,31 +70,32 @@ const Bill = () => {
             ...item,
             [field]: value,
           };
-  
+
           // Ensure Days, Qty, and Rate are converted to numbers before calculation
           const days = parseFloat(updatedItem.days) || 0;
           const qty = parseFloat(updatedItem.qty) || 0;
           const rate = parseFloat(updatedItem.rate) || 0;
-  
+
           // Update the amount dynamically
           updatedItem.amount = days * qty * rate;
-  
+
           return updatedItem;
         }
         return item;
       });
     });
   };
-  
 
   const calculateTotal = () => {
     if (!invoiceItems || invoiceItems.length === 0) return 0;
-  console.log("Your invoice items", invoiceItems)
+    console.log("Your invoice items", invoiceItems);
     return invoiceItems.reduce((total, item) => {
-      return total + (parseFloat(item.qty) * parseFloat(item.rate)* parseFloat(item.days));
+      return (
+        total +
+        parseFloat(item.qty) * parseFloat(item.rate) * parseFloat(item.days)
+      );
     }, 0);
   };
-  
 
   const numberToWords = (num) => {
     if (num === 0) return "Zero Rupees Only";
@@ -184,14 +200,13 @@ const Bill = () => {
   // const pxToMm = 0.264583;
   // const imgWidth = 80 * pxToMm;  // ≈ 21.17mm
   // const imgHeight = 80 * pxToMm; // ≈ 21.17mm
-  
+
   // // Calculate centered position
   // const pageWidth = doc.internal.pageSize.getWidth();
   // const imgX = (pageWidth - imgWidth) / 2;
-  
+
   // // Add image with 80px × 80px dimensions
   // doc.addImage(imgData, 'JPEG', imgX, 5, imgWidth, imgHeight);
-
 
   //   doc.setFont("helvetica", "normal");
   //   doc.setFontSize(10);
@@ -309,23 +324,26 @@ const Bill = () => {
 
   //   doc.save(`invoice_${invoiceNo}.pdf`);
   // };
-
+  const coinImg = "https://i.ibb.co/4ZnsLfv/gold-coin.png"; // or your own coin image
 
   const generatePDF = () => {
+    setShowCoinRain(true);
+    // coinSound.play(); // Play the sound
+    setTimeout(() => setShowCoinRain(false), 3000);
     const doc = new jsPDF();
 
     // Header with contact numbers
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.text("INVOICE", 14, 15);
-    
+
     // Add logo/image
     const pxToMm = 0.264583;
     const imgWidth = 80 * pxToMm;
     const imgHeight = 80 * pxToMm;
     const pageWidth = doc.internal.pageSize.getWidth();
     const imgX = (pageWidth - imgWidth) / 2;
-    doc.addImage(imgData, 'JPEG', imgX, 5, imgWidth, imgHeight);
+    doc.addImage(imgData, "JPEG", imgX, 5, imgWidth, imgHeight);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
@@ -347,14 +365,22 @@ const Bill = () => {
     doc.setFont("helvetica", "bold");
     doc.text("Deals in :", 14, 42);
     doc.setFont("helvetica", "normal");
-    doc.text("Audio / Visual For Events/Conferences/ Exhibitions/Seminars", 35, 42);
+    doc.text(
+      "Audio / Visual For Events/Conferences/ Exhibitions/Seminars",
+      35,
+      42
+    );
     doc.text("All Electrical Accessories Retail Trade", 14, 47);
 
     // Address
     doc.setFont("helvetica", "bold");
     doc.text("Address:", 14, 52);
     doc.setFont("helvetica", "normal");
-    doc.text("Shop No. - 3 Jarnail Enclave Zirakpur Bhabat Road Mohali -140603", 35, 52);
+    doc.text(
+      "Shop No. - 3 Jarnail Enclave Zirakpur Bhabat Road Mohali -140603",
+      35,
+      52
+    );
 
     let yPos = 57;
 
@@ -440,7 +466,7 @@ const Bill = () => {
     doc.text("Terms & Conditions:", 14, yPos);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    
+
     const terms = [
       "1. Payment is due within 7 days from invoice date.",
       "2. Interest @18% p.a. will be charged on overdue payments.",
@@ -453,16 +479,16 @@ const Bill = () => {
       "9. Payment via NEFT/RTGS/Cheque in favor of BHARDWAJ ELECTRICALS.",
       "10. Original invoice must be produced for any service claims.",
       "11. Installation charges extra unless specifically mentioned.",
-      "12. Weekend/holiday rates may apply for event support services."
+      "12. Weekend/holiday rates may apply for event support services.",
     ];
 
-    
-    terms.forEach(term => {
-      if(yPos > 270) { // Check if we need a new page
+    terms.forEach((term) => {
+      if (yPos > 270) {
+        // Check if we need a new page
         doc.addPage();
         yPos = 20;
       }
-      doc.text(term, 16, yPos += 6);
+      doc.text(term, 16, (yPos += 6));
     });
 
     // Footer
@@ -470,7 +496,7 @@ const Bill = () => {
     yPos += 10;
     doc.text("E. & O. E.", 14, yPos);
     doc.text("For BHARDWAJ ELECTRICALS", 130, yPos);
-    
+
     // Signature line
     doc.setFontSize(12);
     yPos += 15;
@@ -478,260 +504,340 @@ const Bill = () => {
     doc.text("Authorized Signatory", 150, yPos + 5);
 
     doc.save(`invoice_${invoiceNo}.pdf`);
-};
-
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("I am called janu", email)
-    if(adminEmail== email){
-      setIsAdmin(true)
-    }else{
-      setError("You have entered the wrong PIN")
+    console.log("I am called janu", email);
+    if (adminEmail == email) {
+      setIsAdmin(true);
+    } else {
+      setError("You have entered the wrong PIN");
     }
-
   };
 
   return (
     <>
-    
-    { isAdmin && <div className="max-w-4xl mx-auto p-5">
+    {/* Rainy effect */}
+    {/* D:\rental\new_rental\react_images_dnd\src\assets\gallery */}
 
-      <div className="relative inline-flex bg-gray-200 rounded-full p-1 w-full max-w-md shadow-md">
-  {/* Sliding background */}
-  <span
-    className={`absolute top-1 left-1 h-[90%] w-1/2 bg-white rounded-full shadow transition-all duration-300 ease-in-out
-      ${activeTab === 'tab2' ? 'translate-x-full' : 'translate-x-0'}`}
-  ></span>
-
-  {/* Buttons */}
-  <button
-    className={`relative z-10 w-1/2 py-2 px-4 text-sm sm:text-base font-medium transition-all duration-300 rounded-full
-      ${activeTab === 'tab1' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-500'}`}
-    onClick={() => setActiveTab('tab1')}
-  >
-    Create Invoice
-  </button>
-  <button
-    className={`relative z-10 w-1/2 py-2 px-4 text-sm sm:text-base font-medium transition-all duration-300 rounded-full
-      ${activeTab === 'tab2' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-500'}`}
-    onClick={() => setActiveTab('tab2')}
-  >
-    Create Quotation
-  </button>
-</div>
+    {showCoinRain && (
+  <div className="coin-rain">
+    {[...Array(25)].map((_, i) => (
+      <img
+        key={i}
+        src='../assets/gallery/coin'
+        alt="coin"
+        className="coin"
+        style={{
+          left: `${Math.random() * 100}%`,
+          animationDuration: `${2 + Math.random() * 2}s`,
+          animationDelay: `${Math.random()}s`,
+        }}
+      />
+    ))}
+  </div>
+)}
 
 
+      {isAdmin && (
+        <div className="max-w-4xl mx-auto p-5">
+          <div className="relative inline-flex bg-gray-200 rounded-full p-1 w-full max-w-md shadow-md mb-[20px]">
+            {/* Sliding background */}
+            <span
+              className={`absolute top-1 left-1 h-[90%] w-1/2 bg-white rounded-full shadow transition-all duration-300 ease-in-out
+      ${activeTab === "tab2" ? "translate-x-full" : "translate-x-0"}`}
+            ></span>
 
-
-
-
-
-
-
-      {activeTab==='tab1' &&<>
-      <h2 className="text-2xl font-bold mb-4">Invoice Generator</h2>
-
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div>
-          <label className="block mb-1">Invoice No.</label>
-          <input
-            type="text"
-            value={invoiceNo}
-            onChange={(e) => setInvoiceNo(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Invoice Date</label>
-          <input
-            type="date"
-            value={invoiceDate}
-            onChange={(e) => setInvoiceDate(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Event Vanue</label>
-          <input
-            type="text"
-            value={enventVenue}
-            onChange={(e) => setEventVenue(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Event Date</label>
-          <input
-            type="text"
-            value={eventDate}
-            onChange={(e) => setEventDate(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Customer Name (M/s)</label>
-          <input
-            type="text"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Customer Phone</label>
-          <input
-            type="text"
-            value={customerPhone}
-            onChange={(e) => setCustomerPhone(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div className="col-span-2">
-          <label className="block mb-1">Customer Address</label>
-          <textarea
-            value={customerAddress}
-            onChange={(e) => setCustomerAddress(e.target.value)}
-            className="w-full p-2 border rounded"
-            rows={2}
-          />
-        </div>
-      </div>
-
-      <table className="w-full border border-gray-300 mb-4">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-2 py-1 w-10">S.No</th>
-            <th className="border px-2 py-1">Description</th>
-            <th className="border px-2 py-1 w-20">Days</th>
-            <th className="border px-2 py-1 w-20">Qty</th>
-            <th className="border px-2 py-1 w-20">Rate</th>
-            <th className="border px-2 py-1 w-20">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {invoiceItems.map((item, index) => (
-            <tr key={index}>
-              <td className="border px-2 py-1 text-center">{index + 1}</td>
-              <td className="border px-2 py-1">
-                <input
-                  type="text"
-                  value={item.description}
-                  onChange={(e) =>
-                    handleInputChange(index, "description", e.target.value)
-                  }
-                  className="w-full p-1"
-                />
-              </td>
-              <td className="border px-2 py-1">
-                <input
-                  type="number"
-                  value={item.days}
-                    onChange={(e) => handleChange(index, "days", e.target.value)}
-                  className="w-full p-1 text-center"
-                  min="1"
-                />
-              </td>
-              <td className="border px-2 py-1">
-                <input
-                  type="number"
-                  value={item.qty}
-                    onChange={(e) => handleChange(index, "qty", e.target.value)}
-                  className="w-full p-1 text-center"
-                />
-              </td>
-              <td className="border px-2 py-1">
-                <input
-                  type="number"
-                  value={item.rate}
-                    onChange={(e) => handleChange(index, "rate", e.target.value)}
-                  className="w-full p-1 text-center"
-                />
-              </td>
-              <td className="border px-2 py-1 text-center">{item.amount}</td>
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr className="bg-gray-100">
-            <td colSpan={5} className="border px-2 py-1 text-right font-bold">
-              Total
-            </td>
-            <td className="border px-2 py-1 text-center font-bold">
-              {calculateTotal()}
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-
-      <div className="flex justify-between mb-6">
-        <div className="w-1/2">
-          <label className="block mb-1">Rupees in words:</label>
-          <div className="p-2 border rounded bg-gray-50 min-h-10">
-            {numberToWords(calculateTotal())}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex justify-between">
-        <div>
-          <button
-            onClick={addItem}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            + Add Item
-          </button>
-        </div>
-        <div>
-          <button
-            onClick={generatePDF}
-            className="bg-green-500 text-white px-4 py-2 ml-2 rounded"
-          >
-            Download PDF
-          </button>
-        </div>
-      </div>
-    </>}
-    {activeTab==='tab2' && <Quotaition />}
-    </div>
-    }
-
-    {!isAdmin && <>
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-      <button
-        onClick={() => setIsOpen(true)}
-        className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700"
-      >
-        Admin Login
-      </button>
-
-      {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-96 relative">
+            {/* Buttons */}
             <button
-              onClick={() => setIsOpen(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+              className={`relative z-10 w-1/2 py-2 px-4 text-sm sm:text-base font-medium transition-all duration-300 rounded-full
+      ${
+        activeTab === "tab1"
+          ? "text-blue-600"
+          : "text-gray-600 hover:text-blue-500"
+      }`}
+              onClick={() => setActiveTab("tab1")}
             >
-              ✕
+              Create Invoice
             </button>
+            <button
+              className={`relative z-10 w-1/2 py-2 px-4 text-sm sm:text-base font-medium transition-all duration-300 rounded-full
+      ${
+        activeTab === "tab2"
+          ? "text-blue-600"
+          : "text-gray-600 hover:text-blue-500"
+      }`}
+              onClick={() => setActiveTab("tab2")}
+            >
+              Create Quotation
+            </button>
+          </div>
 
-            <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">Login</h2>
+          {activeTab === "tab1" && (
+            <>
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">
+                Invoice Generator
+              </h2>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Enter your Pin</label>
-                <input
-                  type="password"
-                  className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your Pin"
-                  value={email}
-                  onChange={(e) => {setEmail(e.target.value); setError('')}}
-                />
-                {error && <p className="text-[red]">{error}</p>}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="mb-1 text-gray-700">
+                    <span className="flex items-center gap-2">
+                      <FaFileInvoice /> Invoice No.
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={invoiceNo}
+                    onChange={(e) => setInvoiceNo(e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 text-gray-700">
+                    <span className="flex items-center gap-2">
+                      <FaCalendarAlt /> Invoice Date
+                    </span>
+                  </label>
+                  <input
+                    type="date"
+                    value={invoiceDate}
+                    onChange={(e) => setInvoiceDate(e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 text-gray-700">
+                    <span className="flex items-center gap-2">
+                      <FaMapMarkerAlt /> Event Venue
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={enventVenue}
+                    onChange={(e) => setEventVenue(e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 text-gray-700">
+                    <span className="flex items-center gap-2">
+                      <FaCalendarAlt /> Event Date
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={eventDate}
+                    onChange={(e) => setEventDate(e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 text-gray-700">
+                    <span className="flex items-center gap-2">
+                      <FaUser /> Customer Name (M/s)
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 text-gray-700">
+                    <span className="flex items-center gap-2">
+                      <FaPhone /> Customer Phone
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="mb-1 text-gray-700">
+                    <span className="flex items-center gap-2">
+                      <FaAddressCard /> Customer Address
+                    </span>
+                  </label>
+                  <textarea
+                    value={customerAddress}
+                    onChange={(e) => setCustomerAddress(e.target.value)}
+                    className="w-full p-2 border rounded"
+                    rows={2}
+                  />
+                </div>
               </div>
 
-              {/* <div>
+              {/* Table for Invoice Items */}
+              <table className="w-full border border-gray-300 mb-4 text-sm">
+                <thead>
+                  <tr className="bg-gray-200">
+                    <th className="border px-2 py-1 w-10">S.No</th>
+                    <th className="border px-2 py-1">Description</th>
+                    <th className="border px-2 py-1 w-20">Days</th>
+                    <th className="border px-2 py-1 w-20">Qty</th>
+                    <th className="border px-2 py-1 w-20">Rate</th>
+                    <th className="border px-2 py-1 w-20">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoiceItems.map((item, index) => (
+                    <tr key={index}>
+                      <td className="border px-2 py-1 text-center">
+                        {index + 1}
+                      </td>
+                      <td className="border px-2 py-1">
+                        <input
+                          type="text"
+                          value={item.description}
+                          onChange={(e) =>
+                            handleInputChange(
+                              index,
+                              "description",
+                              e.target.value
+                            )
+                          }
+                          className="w-full p-1"
+                        />
+                      </td>
+                      <td className="border px-2 py-1">
+                        <input
+                          type="number"
+                          value={item.days}
+                          onChange={(e) =>
+                            handleChange(index, "days", e.target.value)
+                          }
+                          className="w-full p-1 text-center"
+                          min="1"
+                        />
+                      </td>
+                      <td className="border px-2 py-1">
+                        <input
+                          type="number"
+                          value={item.qty}
+                          onChange={(e) =>
+                            handleChange(index, "qty", e.target.value)
+                          }
+                          className="w-full p-1 text-center"
+                        />
+                      </td>
+                      <td className="border px-2 py-1">
+                        <input
+                          type="number"
+                          value={item.rate}
+                          onChange={(e) =>
+                            handleChange(index, "rate", e.target.value)
+                          }
+                          className="w-full p-1 text-center"
+                        />
+                      </td>
+                      <td className="border px-2 py-1 text-center">
+                        {item.amount}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="bg-gray-100">
+                    <td
+                      colSpan={5}
+                      className="border px-2 py-1 text-right font-bold"
+                    >
+                      Total
+                    </td>
+                    <td className="border px-2 py-1 text-center font-bold">
+                      {calculateTotal()}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+
+              {/* Rupees in Words */}
+              <div className="mb-6">
+                <label className="block mb-1 text-gray-700 font-medium">
+                  Rupees in words:
+                </label>
+                <div className="p-2 border rounded bg-gray-50 min-h-10">
+                  {numberToWords(calculateTotal())}
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex flex-col md:flex-row justify-between gap-4">
+                <button
+                  onClick={addItem}
+                  className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <FaPlus /> Add Item
+                </button>
+                <button
+                  onClick={generatePDF}
+                  className="bg-green-500 text-white px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <FaDownload /> Download PDF
+                </button>
+              </div>
+            </>
+          )}
+          {activeTab === "tab2" && <Quotaition />}
+        </div>
+      )}
+
+      {!isAdmin && (
+        <>
+          <div className="flex items-center justify-center h-screen bg-gray-100">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700"
+            >
+              Admin Login
+            </button>
+
+            {isOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                <div className="bg-white rounded-lg shadow-lg p-8 w-96 relative">
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                  >
+                    ✕
+                  </button>
+
+                  <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">
+                    Login
+                  </h2>
+
+                  <form className="space-y-4" onSubmit={handleSubmit}>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Enter your Pin
+                      </label>
+                      <input
+                        type="password"
+                        className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter your Pin"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setError("");
+                        }}
+                      />
+                      {error && <p className="text-[red]">{error}</p>}
+                    </div>
+
+                    {/* <div>
                 <label className="block text-sm font-medium text-gray-700">Password</label>
                 <input
                   type="password"
@@ -742,18 +848,19 @@ const Bill = () => {
                 />
               </div> */}
 
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-              >
-                Login
-              </button>
-            </form>
+                    <button
+                      type="submit"
+                      className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+                    >
+                      Login
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        </>
       )}
-    </div>
-    </>}
     </>
   );
 };
