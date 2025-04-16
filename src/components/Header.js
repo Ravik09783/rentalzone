@@ -35,9 +35,9 @@ export default function HeaderComponent() {
           <Link to="/about" className="hover:text-blue-500 transition">
             About me
           </Link>
-          <Link to="/bill" className="hover:text-blue-500 transition">
+          {/* <Link to="/bill" className="hover:text-blue-500 transition">
             Admin
-          </Link>
+          </Link> */}
         </nav>
 
         {/* Action Buttons */}
@@ -57,7 +57,7 @@ export default function HeaderComponent() {
 
       {/* Mobile Navigation */}
       <div
-        className={`md:hidden bg-yellow-600 transition-all duration-300 ease-in-out ${
+        className={`md:hidden bg-gray-800 transition-all duration-300 ease-in-out ${
           isOpen ? "max-h-96 py-4" : "max-h-0 overflow-hidden"
         }`}
       >
