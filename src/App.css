@@ -94,24 +94,40 @@ button{
 
 .coin {
   position: absolute;
-  top: -50px;
-  width: 40px;
-  height: 40px;
-  animation-name: dropCoin;
-  animation-timing-function: linear;
-  animation-iteration-count: 1;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  opacity: 0;
+  transform: scale(0.5);
+  animation-name: coinBlast, coinFall;
+  animation-duration: 0.8s, 2.5s;
+  animation-delay: 0s, 0.8s;
+  animation-fill-mode: forwards;
 }
 
-@keyframes dropCoin {
+
+@keyframes coinBlast {
   0% {
-    transform: translateY(-50px) rotate(0deg);
-    opacity: 1;
+    opacity: 0;
+    transform: scale(0.5) translate(0, 0);
   }
   100% {
-    transform: translateY(100vh) rotate(360deg);
-    opacity: 0;
+    opacity: 1;
+    transform: scale(1) translate(calc(var(--x) * 1px), calc(var(--y) * 1px));
   }
 }
+
+@keyframes coinFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh);
+  }
+}
+
 
 
 /* Rainy effect end */

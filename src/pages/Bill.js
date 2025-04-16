@@ -32,12 +32,35 @@ const Bill = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showCoinRain, setShowCoinRain] = useState(false);
 
-
   const [eventDate, setEventDate] = useState(
     new Date().toISOString().split("T")[0]
   );
   const [enventVenue, setEventVenue] = useState("");
   const imgData = ganesha;
+
+  const [coins, setCoins] = useState([]);
+
+  useEffect(() => {
+    if (showCoinRain) {
+      let coinIndex = 0;
+      let coinsTemp = [];
+      const interval = setInterval(() => {
+        const x = Math.floor(Math.random() * 400 - 200);
+        const y = Math.floor(Math.random() * -300 - 100);
+        coinsTemp.push({ id: coinIndex++, x, y });
+        setCoins([...coinsTemp]);
+      }, 100); // New coin every 100ms
+
+      const timeout = setTimeout(() => {
+        clearInterval(interval);
+      }, 2500); // Blast lasts 2.5 seconds
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [showCoinRain]);
 
   const addItem = () => {
     setInvoiceItems([
@@ -46,13 +69,13 @@ const Bill = () => {
     ]);
   };
 
-  useEffect(()=>{
-    if(window){
-      if(window.localStorage.getItem('isAdmin')){
-        setIsAdmin(true)
+  useEffect(() => {
+    if (window) {
+      if (window.localStorage.getItem("isAdmin")) {
+        setIsAdmin(true);
       }
     }
-  },[])
+  }, []);
 
   const handleInputChange = (index, field, value) => {
     const updatedItems = invoiceItems.map((item, i) =>
@@ -384,7 +407,7 @@ const Bill = () => {
     console.log("I am called janu", email);
     if (adminEmail == email) {
       setIsAdmin(true);
-      window.localStorage.setItem('isAdmin',true)
+      window.localStorage.setItem("isAdmin", true);
     } else {
       setError("You have entered the wrong PIN");
     }
@@ -392,27 +415,25 @@ const Bill = () => {
 
   return (
     <>
-    {/* Rainy effect */}
-    {/* D:\rental\new_rental\react_images_dnd\src\assets\gallery */}
-{/* Added the image for gold coin update, images will appear when the invoice is genrated */}
-    {showCoinRain && (
-  <div className="coin-rain">
-    {[...Array(25)].map((_, i) => (
-      <img
-        key={i}
-        src={GoldCoin}
-        alt="coin"
-        className="coin"
-        style={{
-          left: `${Math.random() * 100}%`,
-          animationDuration: `${2 + Math.random() * 2}s`,
-          animationDelay: `${Math.random()}s`,
-        }}
-      />
-    ))}
-  </div>
-)}
-
+      {/* Rainy effect */}
+      {/* D:\rental\new_rental\react_images_dnd\src\assets\gallery */}
+      {/* Added the image for gold coin update, images will appear when the invoice is genrated */}
+      {showCoinRain && (
+        <div className="coin-rain">
+          {coins.map((coin) => (
+            <img
+              key={coin.id}
+              src={GoldCoin}
+              alt="coin"
+              className="coin"
+              style={{
+                "--x": coin.x,
+                "--y": coin.y,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {isAdmin && (
         <div className="max-w-4xl mx-auto p-5">
