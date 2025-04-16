@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import jsPDF from "jspdf";
 import ganesha from "../assets/base64/base64";
+import {
+  FaFileInvoice,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaUser,
+  FaPhone,
+  FaAddressCard,
+} from "react-icons/fa";
 
 const Quotaition = () => {
   const [invoiceItems, setInvoiceItems] = useState([]);
@@ -374,7 +382,7 @@ const generatePDF = () => {
      <div className="max-w-4xl mx-auto ">
       <h2 className="text-2xl font-bold mb-4">Quotation Generator</h2>
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      {/* <div className="grid grid-cols-2 gap-4 mb-6">
         <div>
           <label className="block mb-1">Invoice No.</label>
           <input
@@ -439,7 +447,106 @@ const generatePDF = () => {
             rows={2}
           />
         </div>
-      </div>
+      </div> */}
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                      <div>
+                        <label className="mb-1 text-gray-700">
+                          <span className="flex items-center gap-2">
+                            <FaFileInvoice /> Quotation No.
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          value={invoiceNo}
+                          onChange={(e) => setInvoiceNo(e.target.value)}
+                          className="w-full p-2 border rounded"
+                        />
+                      </div>
+      
+                      <div>
+                        <label className="mb-1 text-gray-700">
+                          <span className="flex items-center gap-2">
+                            <FaCalendarAlt /> Quotation Date
+                          </span>
+                        </label>
+                        <input
+                          type="date"
+                          value={invoiceDate}
+                          onChange={(e) => setInvoiceDate(e.target.value)}
+                          className="w-full p-2 border rounded"
+                        />
+                      </div>
+      
+                      <div>
+                        <label className="mb-1 text-gray-700">
+                          <span className="flex items-center gap-2">
+                            <FaMapMarkerAlt /> Event Venue
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          value={enventVenue}
+                          onChange={(e) => setEventVenue(e.target.value)}
+                          className="w-full p-2 border rounded"
+                        />
+                      </div>
+      
+                      <div>
+                        <label className="mb-1 text-gray-700">
+                          <span className="flex items-center gap-2">
+                            <FaCalendarAlt /> Event Date
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          value={eventDate}
+                          onChange={(e) => setEventDate(e.target.value)}
+                          className="w-full p-2 border rounded"
+                        />
+                      </div>
+      
+                      <div>
+                        <label className="mb-1 text-gray-700">
+                          <span className="flex items-center gap-2">
+                            <FaUser /> Customer Name (M/s)
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          value={customerName}
+                          onChange={(e) => setCustomerName(e.target.value)}
+                          className="w-full p-2 border rounded"
+                        />
+                      </div>
+      
+                      <div>
+                        <label className="mb-1 text-gray-700">
+                          <span className="flex items-center gap-2">
+                            <FaPhone /> Customer Phone
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          value={customerPhone}
+                          onChange={(e) => setCustomerPhone(e.target.value)}
+                          className="w-full p-2 border rounded"
+                        />
+                      </div>
+      
+                      <div className="md:col-span-2">
+                        <label className="mb-1 text-gray-700">
+                          <span className="flex items-center gap-2">
+                            <FaAddressCard /> Customer Address
+                          </span>
+                        </label>
+                        <textarea
+                          value={customerAddress}
+                          onChange={(e) => setCustomerAddress(e.target.value)}
+                          className="w-full p-2 border rounded"
+                          rows={2}
+                        />
+                      </div>
+                    </div>
 
       <table className="w-full border border-gray-300 mb-4">
         <thead>

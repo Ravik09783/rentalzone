@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import ganesha from "../assets/base64/base64";
 import Quotaition from "../components/Quotaition";
+import GoldCoin from "../assets/gallery/coin.gif";
+
 import {
   FaFileInvoice,
   FaCalendarAlt,
@@ -43,6 +45,14 @@ const Bill = () => {
       { description: "", qty: 1, days: 1, rate: 0, amount: 0 },
     ]);
   };
+
+  useEffect(()=>{
+    if(window){
+      if(window.localStorage.getItem('isAdmin')){
+        setIsAdmin(true)
+      }
+    }
+  },[])
 
   const handleInputChange = (index, field, value) => {
     const updatedItems = invoiceItems.map((item, i) =>
@@ -189,147 +199,10 @@ const Bill = () => {
     return convert(num) + " Rupees Only";
   };
 
-  // const generatePDF = () => {
-  //   const doc = new jsPDF();
-
-  //   // Header with contact numbers
-  //   doc.setFont("helvetica", "bold");
-  //   doc.setFontSize(12);
-  //   doc.text("INVOICE", 14, 15);
-  // // Convert 80px to mm (assuming 96dpi: 1px ≈ 0.264583mm)
-  // const pxToMm = 0.264583;
-  // const imgWidth = 80 * pxToMm;  // ≈ 21.17mm
-  // const imgHeight = 80 * pxToMm; // ≈ 21.17mm
-
-  // // Calculate centered position
-  // const pageWidth = doc.internal.pageSize.getWidth();
-  // const imgX = (pageWidth - imgWidth) / 2;
-
-  // // Add image with 80px × 80px dimensions
-  // doc.addImage(imgData, 'JPEG', imgX, 5, imgWidth, imgHeight);
-
-  //   doc.setFont("helvetica", "normal");
-  //   doc.setFontSize(10);
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Mob.:", 160, 15);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(" 7888915584", 169, 15);
-  //   doc.text("7986584344", 170, 20);
-
-  //   // Company name and details
-  //   doc.setFont("times", "bold");
-  //   doc.setFontSize(20);
-  //   doc.text("BHARDWAJ ELECTRICALS", 61, 35);
-
-  //   doc.setFont("helvetica", "normal");
-  //   doc.setFontSize(10);
-
-  //   // Deals in
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Deals in :", 14, 42);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text("Audio / Visual For Events/Conferences/ Exhibitions/Seminars", 35, 42);
-  //   doc.text("All Electrical Accessories Retail Trade", 14, 47);
-
-  //   // Address
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Address:", 14, 52);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text("Shop No. - 3 Jarnail Enclave Zirakpur Bhabat Road Mohali -140603", 35, 52);
-
-  //   let yPos = 57; // Start from here to avoid overlaps
-
-  //   // Email ID
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Email ID:", 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text("bhardwajelectrical2023@gmail.com", 35, yPos);
-  //   yPos += 8;
-
-  //   // Event Date
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Event Date:", 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(eventDate, 35, yPos);
-  //   yPos += 8;
-
-  //   // Event Venue
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("Event Venue:" + "  ", 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(enventVenue, 38, yPos);
-  //   yPos += 10;
-
-  //   // Invoice Details
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text(`Invoice No.:`, 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(invoiceNo, 40, yPos);
-  //   yPos += 8;
-
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text(`Invoice Date:`, 14, yPos);
-  //   doc.setFont("helvetica", "normal");
-  //   doc.text(invoiceDate, 40, yPos);
-  //   yPos += 8;
-
-  //   doc.text(`M/s ${customerName}`, 100, yPos - 16);
-  //   doc.text(`Address: ${customerAddress}`, 100, yPos - 8);
-  //   doc.text(`Phone Number: ${customerPhone}`, 100, yPos);
-  //   yPos += 10;
-
-  //   // Table Header
-  //   doc.setFont("helvetica", "bold");
-  //   doc.text("S.No.", 14, yPos);
-  //   doc.text("DESCRIPTION", 30, yPos);
-  //   doc.text("Days", 100, yPos);  // Added Days column
-  //   doc.text("Qty.", 120, yPos);
-  //   doc.text("Rate", 140, yPos);
-  //   doc.text("Amount", 170, yPos);
-  //   yPos += 3;
-
-  //   // Draw horizontal line
-  //   doc.line(14, yPos, 190, yPos);
-  //   yPos += 5;
-
-  //   // Table content
-  //   invoiceItems.forEach((item, index) => {
-  //     doc.setFont("helvetica", "normal");
-  //     doc.text((index + 1).toString(), 14, yPos);
-  //     doc.text(item.description, 30, yPos);
-  //     doc.text(item.days.toString(), 100, yPos);  // Added Days value
-  //     doc.text(item.qty.toString(), 120, yPos);
-  //     doc.text(item.rate.toString(), 140, yPos);
-  //     doc.text(item.amount.toString(), 170, yPos);
-  //     yPos += 7;
-  //   });
-
-  //   // Total line
-  //   doc.setFont("helvetica", "bold");
-  //   doc.line(14, yPos, 190, yPos);
-  //   yPos += 7;
-  //   doc.text("Total", 140, yPos);
-  //   doc.text(calculateTotal().toString(), 170, yPos);
-  //   yPos += 10;
-
-  //   // Rupees in words
-  //   doc.text(`Rupees in words: ${numberToWords(calculateTotal())}`, 14, yPos);
-  //   yPos += 15;
-
-  //   // Footer
-  //   doc.text("E. & O. E.", 14, yPos);
-  //   doc.text("Terms & Conditions:", 14, yPos + 5);
-  //   doc.text("For BHARDWAJ ELECTRICALS", 130, yPos);
-  //   doc.text("Signature", 167, yPos + 8);
-
-  //   doc.save(`invoice_${invoiceNo}.pdf`);
-  // };
-  const coinImg = "https://i.ibb.co/4ZnsLfv/gold-coin.png"; // or your own coin image
-
   const generatePDF = () => {
     setShowCoinRain(true);
     // coinSound.play(); // Play the sound
-    setTimeout(() => setShowCoinRain(false), 3000);
+    setTimeout(() => setShowCoinRain(false), 4000);
     const doc = new jsPDF();
 
     // Header with contact numbers
@@ -511,6 +384,7 @@ const Bill = () => {
     console.log("I am called janu", email);
     if (adminEmail == email) {
       setIsAdmin(true);
+      window.localStorage.setItem('isAdmin',true)
     } else {
       setError("You have entered the wrong PIN");
     }
@@ -520,13 +394,13 @@ const Bill = () => {
     <>
     {/* Rainy effect */}
     {/* D:\rental\new_rental\react_images_dnd\src\assets\gallery */}
-
+{/* Added the image for gold coin update, images will appear when the invoice is genrated */}
     {showCoinRain && (
   <div className="coin-rain">
     {[...Array(25)].map((_, i) => (
       <img
         key={i}
-        src='../assets/gallery/coin'
+        src={GoldCoin}
         alt="coin"
         className="coin"
         style={{
