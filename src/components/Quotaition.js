@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import jsPDF from "jspdf";
-import ganesha from "../assets/base64/base64";
+import {ganesha} from "../assets/base64/base64";
 import {
   FaFileInvoice,
   FaCalendarAlt,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
-import ganesha from "../assets/base64/base64";
+import {ganesha, stamp} from "../assets/base64/base64";
 import Quotaition from "../components/Quotaition";
 import GoldCoin from "../assets/gallery/coin.gif";
 
@@ -37,6 +37,7 @@ const Bill = () => {
   );
   const [enventVenue, setEventVenue] = useState("");
   const imgData = ganesha;
+  const stampImageData = stamp;
 
   const [coins, setCoins] = useState([]);
 
@@ -388,16 +389,34 @@ const Bill = () => {
     });
 
     // Footer
-    doc.setFontSize(10);
-    yPos += 10;
-    doc.text("E. & O. E.", 14, yPos);
-    doc.text("For BHARDWAJ ELECTRICALS", 130, yPos);
+        // Add logo/image
+        // const pxToMm = 0.264583;
+        // const imgWidth = 80 * pxToMm;
+        // const imgHeight = 80 * pxToMm;
+        // const pageWidth = doc.internal.pageSize.getWidth();
+        // const imgX = (pageWidth - imgWidth) / 2;
 
-    // Signature line
-    doc.setFontSize(12);
-    yPos += 15;
-    doc.line(130, yPos, 190, yPos);
-    doc.text("Authorized Signatory", 150, yPos + 5);
+            // Footer with company stamp image
+    const stampWidth = 50; // Adjust width as needed
+    const stampHeight = 30; // Adjust height as needed
+    const pageWidthStamp = doc.internal.pageSize.getWidth();
+    const stampX = pageWidthStamp - 50; // Position from right edge
+    const stampY = doc.internal.pageSize.getHeight() - 40; // Position from bottom
+
+    // Add your stamp image (replace 'stampImageData' with your actual image data)
+    doc.addImage(stampImageData, 'JPEG', stampX, stampY, stampWidth, stampHeight);
+
+
+    // doc.setFontSize(10);
+    // yPos += 10;
+    // doc.text("E. & O. E.", 14, yPos);
+    // doc.text("For BHARDWAJ ELECTRICALS", 130, yPos);
+
+    // // Signature line
+    // doc.setFontSize(12);
+    // yPos += 15;
+    // doc.line(130, yPos, 190, yPos);
+    // doc.text("Authorized Signatory", 150, yPos + 5);
 
     doc.save(`invoice_${invoiceNo}.pdf`);
   };
