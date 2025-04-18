@@ -365,7 +365,7 @@ const Bill = () => {
     doc.setFontSize(8);
 
     const terms = [
-      "1. Payment is due within 7 days from invoice date.",
+      "1. Payment is due within 15 days from invoice date.",
       "2. Interest @18% p.a. will be charged on overdue payments.",
       "3. Goods once sold will not be taken back.",
       "4. All disputes subject to Mohali jurisdiction only.",
