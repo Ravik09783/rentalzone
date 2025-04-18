@@ -35,9 +35,9 @@ export default function HeaderComponent() {
           <Link to="/about" className="hover:text-blue-500 transition">
             About me
           </Link>
-          {/* <Link to="/bill" className="hover:text-blue-500 transition">
+          <Link to="/bill" className="hover:text-blue-500 transition">
             Admin
-          </Link> */}
+          </Link>
         </nav>
 
         {/* Action Buttons */}
