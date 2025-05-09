@@ -353,7 +353,8 @@ if (error) {
     doc.setFont("helvetica", "bold");
     doc.text(`Invoice No.:`, 14, yPos);
     doc.setFont("helvetica", "normal");
-    doc.text(invoiceNo, 40, yPos);
+    // doc.text(invoiceNo, 40, yPos);
+    doc.text(String(invoiceNo), 40, yPos); 
     yPos += 8;
 
     doc.setFont("helvetica", "bold");
