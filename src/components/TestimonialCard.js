@@ -1,26 +1,24 @@
-import Rating from './Rating';
-
 const TestimonialCard = ({ testimonial }) => {
+  const { name, location, avatar, comment, rating, itemsRented } = testimonial;
+
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 flex flex-col h-full transform transition-all hover:scale-[1.02] hover:shadow-lg">
+    <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition duration-300">
       <div className="flex items-center mb-4">
-        <img 
-          src={testimonial.avatar} 
-          alt={testimonial.name}
-          className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-blue-500"
+        <img
+          src={avatar}
+          alt={name}
+          className="w-12 h-12 rounded-full object-cover mr-4"
         />
         <div>
-          <h3 className="font-semibold text-gray-800">{testimonial.name}</h3>
-          <p className="text-gray-500 text-sm">{testimonial.location}</p>
+          <h4 className="font-bold text-gray-800">{name}</h4>
+          <p className="text-sm text-gray-500">{location}</p>
         </div>
       </div>
-      <Rating value={testimonial.rating} />
-      <p className="mt-4 text-gray-600 italic">"{testimonial.comment}"</p>
-      <div className="mt-4 pt-4 border-t border-gray-100">
-        <p className="text-sm text-gray-500">
-          Rented: <span className="font-medium">{testimonial.itemsRented.join(', ')}</span>
-        </p>
+      <p className="text-gray-700 mb-3 italic">“{comment}”</p>
+      <div className="text-yellow-400 text-sm mb-2">
+        {"★".repeat(Math.floor(rating)) + (rating % 1 ? "½" : "")}
       </div>
+      <div className="text-xs text-gray-500">Items Rented: {itemsRented.join(", ")}</div>
     </div>
   );
 };

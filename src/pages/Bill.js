@@ -14,6 +14,7 @@ import {
   FaPlus,
   FaDownload,
 } from "react-icons/fa";
+import { supabase } from "../supabase/supabaseClient";
 
 const Bill = () => {
   const adminEmail = 1223334444;
@@ -40,6 +41,10 @@ const Bill = () => {
   const stampImageData = stamp;
 
   const [coins, setCoins] = useState([]);
+
+  useEffect(()=>{
+    getInvoiceNumber();
+  },[])
 
   useEffect(() => {
     if (showCoinRain) {
@@ -77,6 +82,48 @@ const Bill = () => {
       }
     }
   }, []);
+
+  const getInvoiceNumber = async()=>{
+    const { data, error } = await supabase
+  .from('invoice')
+  .select('*')
+  .order('created_at', { ascending: false }) // sort by created_at descending
+  .limit(1); // only get the latest row
+
+if (error) {
+  console.error("Error fetching latest invoice:", error);
+} else {
+  console.log("Latest invoice:", data[0]);
+  setInvoiceNo(data[0]?.id + 1)
+}
+
+  }
+
+  // const getAllInvoiceList = async()=>{
+  //   const {data} = await supabase.from('invoice').select('*');
+  //   console.log("Your invoice data",data)
+  // }
+
+  const addInvoiceToDB = async()=>{
+    const {data, error} = await supabase.from('invoice').insert({
+     created_at: new Date(),
+     updated_at: new Date(),
+     event_date:eventDate,
+     amount:calculateTotal(),
+     customer_phone:customerPhone,
+     invoice_date:new Date(),
+     event_venue:enventVenue,
+     customer_name:customerName,
+     customer_address:customerAddress,
+     items:invoiceItems
+    }).single()
+
+    if(error){
+      console.error("We are unble to update data in supabase");
+      return;
+    }
+    console.log("Data saved on supabase successfully",data)
+  }
 
   const handleInputChange = (index, field, value) => {
     const updatedItems = invoiceItems.map((item, i) =>
@@ -223,7 +270,7 @@ const Bill = () => {
     return convert(num) + " Rupees Only";
   };
 
-  const generatePDF = () => {
+  const generatePDF = async() => {
     setShowCoinRain(true);
     // coinSound.play(); // Play the sound
     setTimeout(() => setShowCoinRain(false), 4000);
@@ -419,6 +466,8 @@ const Bill = () => {
     // doc.text("Authorized Signatory", 150, yPos + 5);
 
     doc.save(`invoice_${invoiceNo}.pdf`);
+    const data = await addInvoiceToDB();
+    getInvoiceNumber()
   };
 
   const handleSubmit = (e) => {
