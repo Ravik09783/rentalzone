@@ -11,10 +11,26 @@ import Products from "./pages/Products";
 import Gallery from "./pages/Gallery";
 import MobileStickyContact from "./components/MobileStickyContact";
 import Footer from "./components/Footer";
+import Invoice from "./pages/invoice/Invoice";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        limit={1}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        // transition={Bounce}
+      />
       <HeaderComponent />
       <MobileStickyContact />
       <Routes>
@@ -25,6 +41,7 @@ function App() {
         <Route path="services" element={<Services />} />
         <Route path="products" element={<Products />} />
         <Route path="gallery" element={<Gallery />} />
+        <Route path="invoice" element={<Invoice />} />
       </Routes>
       <Footer />
     </BrowserRouter>

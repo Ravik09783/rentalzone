@@ -15,6 +15,7 @@ import {
   FaDownload,
 } from "react-icons/fa";
 import { supabase } from "../supabase/supabaseClient";
+import { toast } from "react-toastify";
 
 const Bill = () => {
   const adminEmail = 1223334444;
@@ -271,6 +272,19 @@ if (error) {
   };
 
   const generatePDF = async() => {
+    if(invoiceItems.length === 0 || calculateTotal()===0){
+      toast('Please add some items to genrate the bill and their price', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+        });
+        return;
+    }
     setShowCoinRain(true);
     // coinSound.play(); // Play the sound
     setTimeout(() => setShowCoinRain(false), 4000);
