@@ -1,71 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { supabase } from '../../supabase/supabaseClient';
+import React, { useEffect, useState } from "react";
+import { supabase } from "../../supabase/supabaseClient";
 
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [invoicesPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const [totalInvoices, setTotalInvoices] = useState(0);
 
-  // Fetch invoices from Supabase with search and pagination
   const fetchInvoices = async () => {
     setIsLoading(true);
     try {
-      // Start the query
       let query = supabase
-        .from('invoice')
-        .select('*', { count: 'exact' })
-        .order('created_at', { ascending: false });
-  
+        .from("invoice")
+        .select("*", { count: "exact" })
+        .order("created_at", { ascending: false });
+
       // Apply search filters
       if (searchTerm) {
         const isNumeric = !isNaN(Number(searchTerm));
-  
+
         if (isNumeric) {
-          // Include numeric search for ID along with string-based filters
           query = query.or(
-            `customer_name.ilike.%${searchTerm}%,event_venue.ilike.%${searchTerm}%,id.eq.${searchTerm}`
+            `amount.ilike.%${searchTerm}%,customer_address.ilike.%${searchTerm}%,customer_name.ilike.%${searchTerm}%,event_venue.ilike.%${searchTerm}%,id.eq.${searchTerm}`
           );
         } else {
-          // Only include string-based filters
           query = query.or(
-            `customer_name.ilike.%${searchTerm}%,event_venue.ilike.%${searchTerm}%`
+            `amount.ilike.%${searchTerm}%,customer_address.ilike.%${searchTerm}%,customer_name.ilike.%${searchTerm}%,event_venue.ilike.%${searchTerm}%`
           );
         }
       }
-  
-      // Apply pagination
+
+      // 🆕 Date filtering logic
+      if (startDate && endDate) {
+        query = query
+          .gte("created_at", `${startDate}T00:00:00Z`)
+          .lte("created_at", `${endDate}T23:59:59Z`);
+      } else if (startDate) {
+        query = query.gte("created_at", `${startDate}T00:00:00Z`);
+      }
+
+      // Pagination
       const from = (currentPage - 1) * invoicesPerPage;
       const to = from + invoicesPerPage - 1;
       query = query.range(from, to);
-  
-      // Execute the query
+
       const { data, error, count } = await query;
-  
+
       if (error) throw error;
-  
+
       setInvoices(data || []);
       setTotalInvoices(count || 0);
     } catch (error) {
-      console.error('Error fetching invoices:', error.message);
+      console.error("Error fetching invoices:", error.message);
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       fetchInvoices(); // Call API after delay
     }, 500); // Delay in ms (e.g., 500ms)
-  
+
     return () => clearTimeout(delayDebounce); // Cancel timeout on change
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, currentPage]);
-  
 
   // Toggle row expansion
   const toggleRow = (id) => {
@@ -74,11 +79,11 @@ const Invoice = () => {
 
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 
@@ -97,11 +102,49 @@ const Invoice = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Invoice Management</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Invoice Management
+            </h2>
             <p className="text-gray-600">
-              Showing {invoices.length} of {totalInvoices} invoice{totalInvoices !== 1 ? 's' : ''}
+              Showing {invoices.length} of {totalInvoices} invoice
+              {totalInvoices !== 1 ? "s" : ""}
             </p>
           </div>
+          <div className="flex flex-col sm:flex-row gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 w-full"
+              />
+            </div>
+
+            <div className="self-end">
+              <button
+                onClick={fetchInvoices}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Filter
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <div className="relative w-full md:w-64">
               <input
@@ -131,7 +174,7 @@ const Invoice = () => {
             </div>
             <button
               onClick={() => {
-                setSearchTerm('');
+                setSearchTerm("");
                 setCurrentPage(1);
                 fetchInvoices();
               }}
@@ -193,28 +236,35 @@ const Invoice = () => {
                         <React.Fragment key={invoice.id}>
                           <tr
                             className={`transition-colors ${
-                              expandedRow === invoice.id ? 'bg-blue-50' : 'hover:bg-gray-50'
+                              expandedRow === invoice.id
+                                ? "bg-blue-50"
+                                : "hover:bg-gray-50"
                             }`}
                           >
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="font-medium text-blue-600">#{invoice.id}</span>
+                              <span className="font-medium text-blue-600">
+                                #{invoice.id}
+                              </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
                                 <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
                                   <span className="text-blue-600 font-medium">
-                                    {invoice.customer_name?.charAt(0) || '?'}
+                                    {invoice.customer_name?.charAt(0) || "?"}
                                   </span>
                                 </div>
-                                <div className="ml-4">
+                                <div className="ml-4 max-w-[250px] whitespace-normal break-words">
                                   <div className="text-sm font-medium text-gray-900">
-                                    {invoice.customer_name || 'Unknown'}
+                                    {invoice.customer_name || "Unknown"}
                                   </div>
+                                  <p>{invoice.customer_address}</p>
                                 </div>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{invoice.event_venue || '-'}</div>
+                              <div className="text-sm text-gray-900">
+                                {invoice.event_venue || "-"}
+                              </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
@@ -223,10 +273,12 @@ const Invoice = () => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-900">
-                                {new Date(invoice.event_date).toLocaleDateString('en-IN', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  year: 'numeric'
+                                {new Date(
+                                  invoice.event_date
+                                ).toLocaleDateString("en-IN", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
                                 })}
                               </div>
                             </td>
@@ -235,8 +287,8 @@ const Invoice = () => {
                                 onClick={() => toggleRow(invoice.id)}
                                 className={`mr-3 px-3 py-1 rounded-md ${
                                   expandedRow === invoice.id
-                                    ? 'bg-blue-100 text-blue-700'
-                                    : 'text-blue-600 hover:bg-blue-50'
+                                    ? "bg-blue-100 text-blue-700"
+                                    : "text-blue-600 hover:bg-blue-50"
                                 }`}
                               >
                                 {expandedRow === invoice.id ? (
@@ -280,61 +332,66 @@ const Invoice = () => {
                             </td>
                           </tr>
 
-                          {expandedRow === invoice.id && invoice.items && invoice.items.length > 0 && (
-                            <tr>
-                              <td colSpan={6} className="px-6 py-4">
-                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                  <h3 className="text-lg font-medium text-gray-800 mb-3">
-                                    Invoice Items
-                                  </h3>
-                                  <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                      <thead className="bg-gray-100">
-                                        <tr>
-                                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Description
-                                          </th>
-                                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Qty
-                                          </th>
-                                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Days
-                                          </th>
-                                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Rate
-                                          </th>
-                                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Amount
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody className="bg-white divide-y divide-gray-200">
-                                        {invoice.items.map((item, index) => (
-                                          <tr key={index} className="hover:bg-gray-50">
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                                              {item.description}
-                                            </td>
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                              {item.qty}
-                                            </td>
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                              {item.days}
-                                            </td>
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                              {formatCurrency(item.rate)}
-                                            </td>
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
-                                              {formatCurrency(item.amount)}
-                                            </td>
+                          {expandedRow === invoice.id &&
+                            invoice.items &&
+                            invoice.items.length > 0 && (
+                              <tr>
+                                <td colSpan={6} className="px-6 py-4">
+                                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                    <h3 className="text-lg font-medium text-gray-800 mb-3">
+                                      Invoice Items
+                                    </h3>
+                                    <div className="overflow-x-auto">
+                                      <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="bg-gray-100">
+                                          <tr>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                              Description
+                                            </th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                              Qty
+                                            </th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                              Days
+                                            </th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                              Rate
+                                            </th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                              Amount
+                                            </th>
                                           </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                          {invoice.items.map((item, index) => (
+                                            <tr
+                                              key={index}
+                                              className="hover:bg-gray-50"
+                                            >
+                                              <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                                {item.description}
+                                              </td>
+                                              <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                {item.qty}
+                                              </td>
+                                              <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                {item.days}
+                                              </td>
+                                              <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                {formatCurrency(item.rate)}
+                                              </td>
+                                              <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {formatCurrency(item.amount)}
+                                              </td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </table>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                          )}
+                                </td>
+                              </tr>
+                            )}
                         </React.Fragment>
                       ))
                     ) : (
@@ -360,8 +417,8 @@ const Invoice = () => {
                             </h3>
                             <p className="mt-1 text-sm text-gray-500">
                               {searchTerm
-                                ? 'Try a different search term'
-                                : 'No invoices have been created yet'}
+                                ? "Try a different search term"
+                                : "No invoices have been created yet"}
                             </p>
                           </div>
                         </td>
@@ -394,22 +451,35 @@ const Invoice = () => {
                 <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                   <div>
                     <p className="text-sm text-gray-700">
-                      Showing <span className="font-medium">{((currentPage - 1) * invoicesPerPage) + 1}</span> to{' '}
+                      Showing{" "}
+                      <span className="font-medium">
+                        {(currentPage - 1) * invoicesPerPage + 1}
+                      </span>{" "}
+                      to{" "}
                       <span className="font-medium">
                         {Math.min(currentPage * invoicesPerPage, totalInvoices)}
-                      </span>{' '}
-                      of <span className="font-medium">{totalInvoices}</span> results
+                      </span>{" "}
+                      of <span className="font-medium">{totalInvoices}</span>{" "}
+                      results
                     </p>
                   </div>
                   <div>
-                    <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                    <nav
+                      className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                      aria-label="Pagination"
+                    >
                       <button
                         onClick={() => paginate(currentPage - 1)}
                         disabled={currentPage === 1}
                         className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
                       >
                         <span className="sr-only">Previous</span>
-                        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
                           <path
                             fillRule="evenodd"
                             d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
@@ -418,40 +488,50 @@ const Invoice = () => {
                         </svg>
                       </button>
                       {/* Page numbers */}
-                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                        let pageNumber;
-                        if (totalPages <= 5) {
-                          pageNumber = i + 1;
-                        } else if (currentPage <= 3) {
-                          pageNumber = i + 1;
-                        } else if (currentPage >= totalPages - 2) {
-                          pageNumber = totalPages - 4 + i;
-                        } else {
-                          pageNumber = currentPage - 2 + i;
-                        }
+                      {Array.from(
+                        { length: Math.min(5, totalPages) },
+                        (_, i) => {
+                          let pageNumber;
+                          if (totalPages <= 5) {
+                            pageNumber = i + 1;
+                          } else if (currentPage <= 3) {
+                            pageNumber = i + 1;
+                          } else if (currentPage >= totalPages - 2) {
+                            pageNumber = totalPages - 4 + i;
+                          } else {
+                            pageNumber = currentPage - 2 + i;
+                          }
 
-                        return (
-                          <button
-                            key={pageNumber}
-                            onClick={() => paginate(pageNumber)}
-                            aria-current={currentPage === pageNumber ? 'page' : undefined}
-                            className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
-                              currentPage === pageNumber
-                                ? 'bg-blue-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
-                                : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
-                            }`}
-                          >
-                            {pageNumber}
-                          </button>
-                        );
-                      })}
+                          return (
+                            <button
+                              key={pageNumber}
+                              onClick={() => paginate(pageNumber)}
+                              aria-current={
+                                currentPage === pageNumber ? "page" : undefined
+                              }
+                              className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                                currentPage === pageNumber
+                                  ? "bg-blue-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                                  : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                              }`}
+                            >
+                              {pageNumber}
+                            </button>
+                          );
+                        }
+                      )}
                       <button
                         onClick={() => paginate(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
                       >
                         <span className="sr-only">Next</span>
-                        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
                           <path
                             fillRule="evenodd"
                             d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l4.5 4.25a.75.75 0 11-1.06 1.02z"
