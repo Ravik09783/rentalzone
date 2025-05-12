@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase/supabaseClient";
+import { generatePDF } from "../../utils/utils";
+import { ganesha, stamp } from "../../assets/base64/base64";
 
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
@@ -96,6 +98,10 @@ const Invoice = () => {
       setCurrentPage(pageNumber);
     }
   };
+
+  const downloadInvoice = (invoice)=>{
+    generatePDF(invoice.items, ganesha, invoice.event_date, invoice.event_venue, invoice.id, invoice.invoice_date, invoice.customer_name, invoice.customer_address, invoice.customer_phone, stamp )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 p-4 md:p-8">
@@ -283,9 +289,13 @@ const Invoice = () => {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <button
+                            <span className="flex items-center pl-5 text-blue-600 hover:bg-blue-50 cursor-pointer" onClick={()=>downloadInvoice(invoice)}>
+                                   
+                                     Invoice
+                                  </span>
+                              <span
                                 onClick={() => toggleRow(invoice.id)}
-                                className={`mr-3 px-3 py-1 rounded-md ${
+                                className={`mr-3 px-3 py-1 rounded-md cursor-pointer ${
                                   expandedRow === invoice.id
                                     ? "bg-blue-100 text-blue-700"
                                     : "text-blue-600 hover:bg-blue-50"
@@ -328,7 +338,7 @@ const Invoice = () => {
                                     Details
                                   </span>
                                 )}
-                              </button>
+                              </span>
                             </td>
                           </tr>
 

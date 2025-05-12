@@ -12,7 +12,7 @@ import {
   FaDownload,
 } from "react-icons/fa";
 import { supabase } from "../supabase/supabaseClient";
-import { calculateTotal, generatePDF, numberToWords } from "../utils/utils";
+import { addInvoiceToDB, calculateTotal, generatePDF, numberToWords } from "../utils/utils";
 
 const initialItem = {
   description: "",
@@ -124,6 +124,14 @@ const Bill = () => {
       customerAddress,
       customerPhone,
       stampImageData
+    );
+    await addInvoiceToDB(
+      eventDate,
+      customerPhone,
+      enventVenue,
+      customerName,
+      customerAddress,
+      invoiceItems
     );
     getInvoiceNumber();
   }, [
