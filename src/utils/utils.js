@@ -358,6 +358,233 @@ export const addInvoiceToDB = async (
 // };
 
 
+// export const generatePDF = async (
+//   invoiceItems,
+//   imgData,
+//   eventDate,
+//   enventVenue,
+//   invoiceNo,
+//   invoiceDate,
+//   customerName,
+//   customerAddress,
+//   customerPhone,
+//   stampImageData
+// ) => {
+//   if (invoiceItems.length === 0 || calculateTotal(invoiceItems) === 0) {
+//     toast("Please add some items to genrate the bill and their price", {
+//       position: "top-right",
+//       autoClose: 2000,
+//       hideProgressBar: false,
+//       closeOnClick: false,
+//       pauseOnHover: true,
+//       draggable: true,
+//       progress: 0,
+//       theme: "light",
+//     });
+//     return;
+//   }
+
+//   const doc = new jsPDF();
+//   const pxToMm = 0.264583;
+//   const pageWidth = doc.internal.pageSize.getWidth();
+//   let yPos = 15;
+
+//   // Add logo/image
+//   const imgWidth = 80 * pxToMm;
+//   const imgHeight = 80 * pxToMm;
+//   const imgX = (pageWidth - imgWidth) / 2;
+//   doc.addImage(imgData, "JPEG", imgX, 5, imgWidth, imgHeight);
+
+//   // Invoice header
+//   doc.setFont("helvetica", "bold");
+//   doc.setFontSize(12);
+//   doc.text("INVOICE", 14, yPos);
+
+//   // Contact numbers on right
+//   doc.setFont("helvetica", "normal");
+//   doc.setFontSize(10);
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Mob.:", 160, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text("7888915584", 169, yPos);
+//   doc.text("7986584344", 170, yPos + 5);
+//   yPos += 10;
+
+//   // Company name
+//   doc.setFont("times", "bold");
+//   doc.setFontSize(20);
+//   doc.text("BHARDWAJ ELECTRICALS", 61, yPos + 10); // Added +30 here
+//   yPos += 20;
+
+//   // Invoice details section
+//   doc.setFont("helvetica", "bold");
+//   doc.setFontSize(10);
+//   doc.text(`Invoice No.:`, 14, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text(String(invoiceNo), 40, yPos);
+  
+//   doc.setFont("helvetica", "bold");
+//   doc.text(`Invoice Date:`, 100, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text(formatToReadableDate(invoiceDate), 130, yPos);
+//   yPos += 8;
+
+//   // Event details
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Event Date:", 14, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text(formatToReadableDate(eventDate), 40, yPos);
+  
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Event Venue:", 100, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text(enventVenue, 130, yPos);
+//   yPos += 8;
+
+//   // Customer details
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Customer Name:", 14, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text(customerName, 50, yPos);
+//   yPos += 8;
+
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Customer Address:", 14, yPos);
+//   doc.setFont("helvetica", "normal");
+  
+//   // Split address into multiple lines if too long
+//   const addressLines = doc.splitTextToSize(customerAddress, 120);
+//   doc.text(addressLines, 35, yPos);
+//   yPos += (addressLines.length * 5); // Adjust spacing based on number of lines
+  
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Customer Mob:", 14, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text(customerPhone, 35, yPos);
+//   yPos += 10;
+
+//   // Company details below invoice header
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Deals in :", 14, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text(
+//     "Audio / Visual For Events/Conferences/ Exhibitions/Seminars",
+//     35,
+//     yPos
+//   );
+//   doc.text("All Electrical Accessories Retail Trade", 14, yPos + 5);
+//   yPos += 10;
+
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Address:", 14, yPos);
+//   doc.setFont("helvetica", "normal");
+  
+//   // Split company address into multiple lines
+//   const companyAddress = "Shop No. - 3 Jarnail Enclave Zirakpur Bhabat Road Mohali -140603";
+//   const companyAddressLines = doc.splitTextToSize(companyAddress, 120);
+//   doc.text(companyAddressLines, 35, yPos);
+//   yPos += (companyAddressLines.length * 5);
+  
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Email ID:", 14, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.text("bhardwajelectrical2023@gmail.com", 35, yPos);
+//   yPos += 15;
+
+//   // Table Header
+//   doc.setFont("helvetica", "bold");
+//   doc.text("S.No.", 14, yPos);
+//   doc.text("DESCRIPTION", 30, yPos);
+//   doc.text("Days", 100, yPos);
+//   doc.text("Qty.", 120, yPos);
+//   doc.text("Rate", 140, yPos);
+//   doc.text("Amount", 170, yPos);
+//   yPos += 3;
+
+//   // Draw horizontal line
+//   doc.line(14, yPos, 190, yPos);
+//   yPos += 5;
+
+//   // Table content
+//   invoiceItems.forEach((item, index) => {
+//     if (yPos > 250) { // Check if we need a new page before adding row
+//       doc.addPage();
+//       yPos = 20;
+//     }
+    
+//     doc.setFont("helvetica", "normal");
+//     doc.text((index + 1).toString(), 14, yPos);
+//     doc.text(item.description, 30, yPos);
+//     doc.text(item.days.toString(), 100, yPos);
+//     doc.text(item.qty.toString(), 120, yPos);
+//     doc.text(item.rate.toString(), 140, yPos);
+//     doc.text(item.amount.toString(), 170, yPos);
+//     yPos += 7;
+//   });
+
+//   // Total line
+//   doc.setFont("helvetica", "bold");
+//   doc.line(14, yPos, 190, yPos);
+//   yPos += 7;
+//   doc.text("Total", 140, yPos);
+//   doc.text(calculateTotal(invoiceItems).toString(), 170, yPos);
+//   yPos += 10;
+
+//   // Rupees in words
+//   doc.text(
+//     `Rupees in words: ${numberToWords(calculateTotal(invoiceItems))}`,
+//     14,
+//     yPos
+//   );
+//   yPos += 15;
+
+//   // Standard Terms and Conditions
+//   doc.setFont("helvetica", "bold");
+//   doc.text("Terms & Conditions:", 14, yPos);
+//   doc.setFont("helvetica", "normal");
+//   doc.setFontSize(8);
+
+//   const terms = [
+//     "1. Payment is due within 15 days from invoice date.",
+//     "2. Interest @18% p.a. will be charged on overdue payments.",
+//     "3. Goods once sold will not be taken back.",
+//     "4. All disputes subject to Mohali jurisdiction only.",
+//     "5. Rental equipment must be returned in same condition as delivered.",
+//     "6. Security deposit is refundable after equipment return and inspection.",
+//     "7. Client is responsible for any damage/loss during rental period.",
+//     "8. Prices inclusive of all taxes unless specified otherwise.",
+//     "9. Payment via NEFT/RTGS/Cheque in favor of BHARDWAJ ELECTRICALS.",
+//     "10. Original invoice must be produced for any service claims.",
+//     "11. Installation charges extra unless specifically mentioned.",
+//     "12. Weekend/holiday rates may apply for event support services.",
+//   ];
+
+//   terms.forEach((term) => {
+//     if (yPos > 270) {
+//       doc.addPage();
+//       yPos = 20;
+//     }
+//     doc.text(term, 16, (yPos += 6));
+//   });
+
+//   // Footer with company stamp image
+//   const stampWidth = 50;
+//   const stampHeight = 30;
+//   const pageWidthStamp = doc.internal.pageSize.getWidth();
+//   const stampX = pageWidthStamp - 50;
+//   const stampY = doc.internal.pageSize.getHeight() - 40;
+
+//   doc.addImage(stampImageData, "JPEG", stampX, stampY, stampWidth, stampHeight);
+
+//   doc.save(`invoice_${invoiceNo}.pdf`);
+
+// };
+
+
+
+
+
+
 export const generatePDF = async (
   invoiceItems,
   imgData,
@@ -368,10 +595,11 @@ export const generatePDF = async (
   customerName,
   customerAddress,
   customerPhone,
-  stampImageData
+  stampImageData,
+  customerGST= "not provided" // ✅ New parameter
 ) => {
   if (invoiceItems.length === 0 || calculateTotal(invoiceItems) === 0) {
-    toast("Please add some items to genrate the bill and their price", {
+    toast("Please add some items to generate the bill and their price", {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -392,13 +620,18 @@ export const generatePDF = async (
   // Add logo/image
   const imgWidth = 80 * pxToMm;
   const imgHeight = 80 * pxToMm;
+  // const imgX = (pageWidth - imgWidth) / 2;
+  // doc.addImage(imgData, "JPEG", imgX, 5, imgWidth, imgHeight);
   const imgX = (pageWidth - imgWidth) / 2;
-  doc.addImage(imgData, "JPEG", imgX, 5, imgWidth, imgHeight);
+  const imageTop = 5;
+  doc.addImage(imgData, "JPEG", imgX, imageTop, imgWidth, imgHeight);
+  yPos = imageTop + imgHeight + 5; // Give space below image
 
-  // Invoice header
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.text("INVOICE", 14, yPos);
+
+// Invoice header
+doc.setFont("helvetica", "bold");
+doc.setFontSize(12);
+doc.text("INVOICE", 14, yPos);
 
   // Contact numbers on right
   doc.setFont("helvetica", "normal");
@@ -413,83 +646,92 @@ export const generatePDF = async (
   // Company name
   doc.setFont("times", "bold");
   doc.setFontSize(20);
-  doc.text("BHARDWAJ ELECTRICALS", 61, yPos + 10); // Added +30 here
-  yPos += 15;
+  doc.text("BHARDWAJ ELECTRICALS", 61, yPos);
+  yPos += 10;
 
-  // Invoice details section
+  // Company address
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text(`Invoice No.:`, 14, yPos);
+  doc.text("Address:", 14, yPos);
   doc.setFont("helvetica", "normal");
-  doc.text(String(invoiceNo), 40, yPos);
-  
+  const companyAddress = "Shop No. - 3 Jarnail Enclave Zirakpur Bhabat Road Mohali -140603";
+  const companyAddressLines = doc.splitTextToSize(companyAddress, 120);
+  doc.text(companyAddressLines, 32, yPos);
+  yPos += companyAddressLines.length * 5;
+
+  // // Company GST
+  // doc.setFont("helvetica", "bold");
+  // doc.text("GST No:", 14, yPos);
+  // doc.setFont("helvetica", "normal");
+  // doc.text("03AEIPB1903Q1Z2", 32, yPos); // Replace with actual GST if dynamic
+  // yPos += 8;
+
+  // Deals in
   doc.setFont("helvetica", "bold");
-  doc.text(`Invoice Date:`, 100, yPos);
+  doc.text("Deals in :", 14, yPos);
   doc.setFont("helvetica", "normal");
-  doc.text(formatToReadableDate(invoiceDate), 130, yPos);
+  doc.text("Audio / Visual For Events/Conferences/Exhibitions/Seminars", 32, yPos);
+  doc.text("All Electrical Accessories Retail Trade", 14, yPos + 5);
+  yPos += 15;
+
+  // Invoice details
+  doc.setFont("helvetica", "bold");
+  doc.text("Invoice No.:", 14, yPos);
+  doc.setFont("helvetica", "normal");
+  doc.text(String(invoiceNo), 36, yPos);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Invoice Date:", 100, yPos);
+  doc.setFont("helvetica", "normal");
+  doc.text(formatToReadableDate(invoiceDate), 124, yPos);
   yPos += 8;
 
   // Event details
   doc.setFont("helvetica", "bold");
   doc.text("Event Date:", 14, yPos);
   doc.setFont("helvetica", "normal");
-  doc.text(formatToReadableDate(eventDate), 40, yPos);
-  
+  doc.text(formatToReadableDate(eventDate), 35, yPos);
+
   doc.setFont("helvetica", "bold");
   doc.text("Event Venue:", 100, yPos);
   doc.setFont("helvetica", "normal");
-  doc.text(enventVenue, 130, yPos);
+  doc.text(enventVenue, 124, yPos);
   yPos += 8;
 
-  // Customer details
-  doc.setFont("helvetica", "bold");
-  doc.text("Customer Name:", 14, yPos);
-  doc.setFont("helvetica", "normal");
-  doc.text(customerName, 50, yPos);
-  yPos += 8;
+// Customer details
+doc.setFont("helvetica", "bold");
+doc.text("Customer Name:", 14, yPos);
+doc.setFont("helvetica", "normal");
+doc.text(customerName, 44, yPos);
+yPos += 8;
 
-  doc.setFont("helvetica", "bold");
-  doc.text("Address:", 14, yPos);
-  doc.setFont("helvetica", "normal");
-  
-  // Split address into multiple lines if too long
-  const addressLines = doc.splitTextToSize(customerAddress, 120);
-  doc.text(addressLines, 35, yPos);
-  yPos += (addressLines.length * 5); // Adjust spacing based on number of lines
-  
-  doc.setFont("helvetica", "bold");
-  doc.text("Phone:", 14, yPos);
-  doc.setFont("helvetica", "normal");
-  doc.text(customerPhone, 35, yPos);
-  yPos += 10;
+// Address label
+doc.setFont("helvetica", "bold");
+doc.text("Customer Address:", 14, yPos);
+doc.setFont("helvetica", "normal");
 
-  // Company details below invoice header
-  doc.setFont("helvetica", "bold");
-  doc.text("Deals in :", 14, yPos);
-  doc.setFont("helvetica", "normal");
-  doc.text(
-    "Audio / Visual For Events/Conferences/ Exhibitions/Seminars",
-    35,
-    yPos
-  );
-  doc.text("All Electrical Accessories Retail Trade", 14, yPos + 5);
-  yPos += 10;
+// Split address into multiple lines if too long
+const addressLines = doc.splitTextToSize(customerAddress, 120);
+doc.text(addressLines, 48, yPos);
+yPos += (addressLines.length * 5); 
 
-  doc.setFont("helvetica", "bold");
-  doc.text("Address:", 14, yPos);
-  doc.setFont("helvetica", "normal");
-  
-  // Split company address into multiple lines
-  const companyAddress = "Shop No. - 3 Jarnail Enclave Zirakpur Bhabat Road Mohali -140603";
-  const companyAddressLines = doc.splitTextToSize(companyAddress, 120);
-  doc.text(companyAddressLines, 35, yPos);
-  yPos += (companyAddressLines.length * 5);
-  
-  doc.setFont("helvetica", "bold");
-  doc.text("Email ID:", 14, yPos);
-  doc.setFont("helvetica", "normal");
-  doc.text("bhardwajelectrical2023@gmail.com", 35, yPos);
-  yPos += 15;
+// Customer Mobile
+doc.setFont("helvetica", "bold");
+doc.text("Customer Mob:", 14, yPos);
+doc.setFont("helvetica", "normal");
+doc.text(customerPhone, 41, yPos);
+yPos += 10;
+
+
+
+  // // ✅ Customer GST
+  // if (customerGST) {
+  //   doc.setFont("helvetica", "bold");
+  //   doc.text("Customer GST:", 14, yPos);
+  //   doc.setFont("helvetica", "normal");
+  //   doc.text(customerGST, 41, yPos);
+  //   yPos += 10;
+  // }
 
   // Table Header
   doc.setFont("helvetica", "bold");
@@ -501,17 +743,15 @@ export const generatePDF = async (
   doc.text("Amount", 170, yPos);
   yPos += 3;
 
-  // Draw horizontal line
   doc.line(14, yPos, 190, yPos);
   yPos += 5;
 
-  // Table content
+  // Table rows
   invoiceItems.forEach((item, index) => {
-    if (yPos > 250) { // Check if we need a new page before adding row
+    if (yPos > 250) {
       doc.addPage();
       yPos = 20;
     }
-    
     doc.setFont("helvetica", "normal");
     doc.text((index + 1).toString(), 14, yPos);
     doc.text(item.description, 30, yPos);
@@ -522,7 +762,7 @@ export const generatePDF = async (
     yPos += 7;
   });
 
-  // Total line
+  // Total
   doc.setFont("helvetica", "bold");
   doc.line(14, yPos, 190, yPos);
   yPos += 7;
@@ -530,7 +770,7 @@ export const generatePDF = async (
   doc.text(calculateTotal(invoiceItems).toString(), 170, yPos);
   yPos += 10;
 
-  // Rupees in words
+  // Total in words
   doc.text(
     `Rupees in words: ${numberToWords(calculateTotal(invoiceItems))}`,
     14,
@@ -538,12 +778,11 @@ export const generatePDF = async (
   );
   yPos += 15;
 
-  // Standard Terms and Conditions
+  // Terms and conditions
   doc.setFont("helvetica", "bold");
   doc.text("Terms & Conditions:", 14, yPos);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
-
   const terms = [
     "1. Payment is due within 15 days from invoice date.",
     "2. Interest @18% p.a. will be charged on overdue payments.",
@@ -567,7 +806,7 @@ export const generatePDF = async (
     doc.text(term, 16, (yPos += 6));
   });
 
-  // Footer with company stamp image
+  // Stamp
   const stampWidth = 50;
   const stampHeight = 30;
   const pageWidthStamp = doc.internal.pageSize.getWidth();
@@ -577,5 +816,4 @@ export const generatePDF = async (
   doc.addImage(stampImageData, "JPEG", stampX, stampY, stampWidth, stampHeight);
 
   doc.save(`invoice_${invoiceNo}.pdf`);
-
 };
