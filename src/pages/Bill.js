@@ -652,7 +652,7 @@ const Bill = () => {
         console.error('Error updating invoice:', updateError);
         return;
       }
-      alert('Invoice updated successfully!');
+      // alert('Invoice updated successfully!');
     } else {
       // Create new invoice in Supabase
       await addInvoiceToDB(
