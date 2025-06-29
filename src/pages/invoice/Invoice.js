@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase/supabaseClient";
 import { generatePDF } from "../../utils/utils";
 import { ganesha, stamp } from "../../assets/base64/base64";
+import InvoiceChart from "./components/InvoiceChart";
 
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
+  const [allInvoiceData, setAllInvoiceData] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -65,6 +67,26 @@ const Invoice = () => {
     }
   };
 
+  const fetchAllInvoices = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("invoice")
+        .select("*")
+        .order("created_at", { ascending: false });
+  
+      if (error) throw error;
+  
+      // Use this full data for your chart
+      setAllInvoiceData(data || []);
+    } catch (error) {
+      console.error("Error fetching all invoices:", error.message);
+    }
+  };
+
+  useEffect(()=>{
+    fetchAllInvoices();
+  },[])
+
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       fetchInvoices(); // Call API after delay
@@ -104,6 +126,7 @@ const Invoice = () => {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -558,6 +581,11 @@ const Invoice = () => {
         )}
       </div>
     </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 p-4 md:p-8">
+      {/* <h1>Invoice Report</h1> */}
+      <InvoiceChart data={allInvoiceData} />
+    </div>
+    </>
   );
 };
 

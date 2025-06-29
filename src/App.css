@@ -105,6 +105,44 @@ button{
   animation-fill-mode: forwards;
 }
 
+/* styles.css */
+.invoice-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.invoice-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.select-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.select-wrapper label {
+  margin-right: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.select-wrapper select {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+
 
 @keyframes coinBlast {
   0% {
