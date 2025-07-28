@@ -637,9 +637,9 @@ doc.text("INVOICE", 14, yPos);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text("Mob.:", 160, yPos);
+  doc.text("Mob", 160, yPos);
   doc.setFont("helvetica", "normal");
-  doc.text("7888915584", 169, yPos);
+  doc.text("7888915584", 170, yPos);
   doc.text("7986584344", 170, yPos + 5);
   yPos += 10;
 
