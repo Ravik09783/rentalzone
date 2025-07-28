@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import jsPDF from "jspdf";
-import {ganesha} from "../assets/base64/base64";
+import {ganesha, stamp} from "../assets/base64/base64";
 import {
   FaFileInvoice,
   FaCalendarAlt,
@@ -222,9 +222,9 @@ const generatePDF = () => {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.text("Mob.:", 160, 15);
+    doc.text("Mob", 160, 15);
     doc.setFont("helvetica", "normal");
-    doc.text(" 7888915584", 169, 15);
+    doc.text("7888915584", 170, 15);
     doc.text("7986584344", 170, 20);
 
     // Company name and details
@@ -367,13 +367,21 @@ const generatePDF = () => {
     doc.text("E. & O. E.", 14, pageHeight - 20);
     
     // Fixed position for company stamp (right side)
-    doc.text("For BHARDWAJ ELECTRICALS", pageWidth - 60, pageHeight - 20);
+    // doc.text("For BHARDWAJ ELECTRICALS", pageWidth - 60, pageHeight - 20);
     
-    // Signature line (fixed position relative to page bottom)
-    doc.setFontSize(12);
-    const signatureY = pageHeight - 10;
-    doc.line(pageWidth - 60, signatureY, pageWidth - 10, signatureY);
-    doc.text("Authorized Signatory", pageWidth - 45, signatureY + 5);
+    // // Signature line (fixed position relative to page bottom)
+    // doc.setFontSize(12);
+    // const signatureY = pageHeight - 10;
+    // doc.line(pageWidth - 60, signatureY, pageWidth - 10, signatureY);
+    // doc.text("Authorized Signatory", pageWidth - 45, signatureY + 5);
+
+      const stampWidth = 50;
+  const stampHeight = 30;
+  const pageWidthStamp = doc.internal.pageSize.getWidth();
+  const stampX = pageWidthStamp - 50;
+  const stampY = doc.internal.pageSize.getHeight() - 40;
+
+  doc.addImage(stamp, "JPEG", stampX, stampY, stampWidth, stampHeight);
 
     doc.save(`quotation_${invoiceNo}.pdf`);  // Changed filename to quotation_
 };
