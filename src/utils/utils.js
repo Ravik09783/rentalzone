@@ -2,16 +2,34 @@ import jsPDF from "jspdf";
 import { toast } from "react-toastify";
 import { supabase } from "../supabase/supabaseClient";
 
+// export const calculateTotal = (invoiceItems) => {
+//   if (!invoiceItems || invoiceItems.length === 0) return 0;
+//   console.log("Your invoice items", invoiceItems);
+//   return invoiceItems.reduce((total, item) => {
+//     return (
+//       total +
+//       parseFloat(item.qty) * parseFloat(item.rate) * parseFloat(item.days)
+//     );
+//   }, 0);
+// };
+
 export const calculateTotal = (invoiceItems) => {
   if (!invoiceItems || invoiceItems.length === 0) return 0;
-  console.log("Your invoice items", invoiceItems);
-  return invoiceItems.reduce((total, item) => {
-    return (
-      total +
-      parseFloat(item.qty) * parseFloat(item.rate) * parseFloat(item.days)
-    );
-  }, 0);
+
+  return invoiceItems
+    .filter((item) => item.days && item.amount !== "")
+    .reduce((total, item) => {
+      const qty = parseFloat(item.qty);
+      const rate = parseFloat(item.rate);
+      const days = parseFloat(item.days);
+
+      if (isNaN(qty) || isNaN(rate) || isNaN(days)) return total;
+
+      return total + qty * rate * days;
+    }, 0);
 };
+
+
 
 export const numberToWords = (num) => {
   if (num === 0) return "Zero Rupees Only";

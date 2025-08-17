@@ -28,7 +28,7 @@ const Quotaition = () => {
   const addItem = () => {
     setInvoiceItems([
       ...invoiceItems,
-      { description: "", qty: 1, days: 1, rate: 0, amount: 0 },
+      { description: "", qty: '', days: '', rate: '', amount: '' },
     ]);
   };
 
@@ -48,38 +48,73 @@ const Quotaition = () => {
     setInvoiceItems(updatedItems);
   };
 
+  // const handleChange = (index, field, value) => {
+  //   setInvoiceItems((prevItems) => {
+  //     return prevItems.map((item, i) => {
+  //       if (i === index) {
+  //         const updatedItem = {
+  //           ...item,
+  //           [field]: value,
+  //         };
+  
+  //         // Ensure Days, Qty, and Rate are converted to numbers before calculation
+  //         const days = parseFloat(updatedItem.days) || 0;
+  //         const qty = parseFloat(updatedItem.qty) || 0;
+  //         const rate = parseFloat(updatedItem.rate) || 0;
+  
+  //         // Update the amount dynamically
+  //         updatedItem.amount = days * qty * rate;
+  
+  //         return updatedItem;
+  //       }
+  //       return item;
+  //     });
+  //   });
+  // };
+  
   const handleChange = (index, field, value) => {
-    setInvoiceItems((prevItems) => {
-      return prevItems.map((item, i) => {
-        if (i === index) {
-          const updatedItem = {
-            ...item,
-            [field]: value,
-          };
-  
-          // Ensure Days, Qty, and Rate are converted to numbers before calculation
-          const days = parseFloat(updatedItem.days) || 0;
-          const qty = parseFloat(updatedItem.qty) || 0;
-          const rate = parseFloat(updatedItem.rate) || 0;
-  
-          // Update the amount dynamically
-          updatedItem.amount = days * qty * rate;
-  
-          return updatedItem;
-        }
-        return item;
-      });
-    });
-  };
-  
+  setInvoiceItems((prevItems) => {
+    return prevItems.map((item, i) => {
+      if (i === index) {
+        const updatedItem = {
+          ...item,
+          [field]: value,
+        };
 
-  const calculateTotal = () => {
-    if (!invoiceItems || invoiceItems.length === 0) return 0;
-  console.log("Your invoice items", invoiceItems)
-    return invoiceItems.reduce((total, item) => {
-      return total + (parseFloat(item.qty) * parseFloat(item.rate)* parseFloat(item.days));
+        const days = parseFloat(updatedItem.days);
+        const qty = parseFloat(updatedItem.qty);
+        const rate = parseFloat(updatedItem.rate);
+
+        if (!isNaN(days) && !isNaN(qty) && !isNaN(rate)) {
+          updatedItem.amount = days * qty * rate;
+        } else {
+          updatedItem.amount = ""; // keep it blank
+        }
+
+        return updatedItem;
+      }
+      return item;
+    });
+  });
+};
+
+
+const calculateTotal = () => {
+  if (!invoiceItems || invoiceItems.length === 0) return 0;
+
+  return invoiceItems
+    .filter((item) => item.days && item.qty && item.rate)
+    .reduce((total, item) => {
+      const days = parseFloat(item.days);
+      const qty = parseFloat(item.qty);
+      const rate = parseFloat(item.rate);
+
+      if (isNaN(days) || isNaN(qty) || isNaN(rate)) return total;
+
+      return total + days * qty * rate;
     }, 0);
-  };
+};
+
   
 
   const numberToWords = (num) => {
@@ -385,77 +420,15 @@ const generatePDF = () => {
 
     doc.save(`quotation_${invoiceNo}.pdf`);  // Changed filename to quotation_
 };
+
+const removeItem = (indexToRemove) => {
+  setInvoiceItems((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+};
+
   return (
     <>
      <div className="max-w-4xl mx-auto ">
       <h2 className="text-2xl font-bold mb-4">Quotation Generator</h2>
-
-      {/* <div className="grid grid-cols-2 gap-4 mb-6">
-        <div>
-          <label className="block mb-1">Invoice No.</label>
-          <input
-            type="text"
-            value={invoiceNo}
-            onChange={(e) => setInvoiceNo(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Invoice Date</label>
-          <input
-            type="date"
-            value={invoiceDate}
-            onChange={(e) => setInvoiceDate(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Event Vanue</label>
-          <input
-            type="text"
-            value={enventVenue}
-            onChange={(e) => setEventVenue(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Event Date</label>
-          <input
-            type="text"
-            value={eventDate}
-            onChange={(e) => setEventDate(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Customer Name (M/s)</label>
-          <input
-            type="text"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Customer Phone</label>
-          <input
-            type="text"
-            value={customerPhone}
-            onChange={(e) => setCustomerPhone(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div className="col-span-2">
-          <label className="block mb-1">Customer Address</label>
-          <textarea
-            value={customerAddress}
-            onChange={(e) => setCustomerAddress(e.target.value)}
-            className="w-full p-2 border rounded"
-            rows={2}
-          />
-        </div>
-      </div> */}
        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                       <div>
                         <label className="mb-1 text-gray-700">
@@ -567,49 +540,62 @@ const generatePDF = () => {
             <th className="border px-2 py-1 w-20">Amount</th>
           </tr>
         </thead>
-        <tbody>
-          {invoiceItems.map((item, index) => (
-            <tr key={index}>
-              <td className="border px-2 py-1 text-center">{index + 1}</td>
-              <td className="border px-2 py-1">
-                <input
-                  type="text"
-                  value={item.description}
-                  onChange={(e) =>
-                    handleInputChange(index, "description", e.target.value)
-                  }
-                  className="w-full p-1"
-                />
-              </td>
-              <td className="border px-2 py-1">
-                <input
-                  type="number"
-                  value={item.days}
-                    onChange={(e) => handleChange(index, "days", e.target.value)}
-                  className="w-full p-1 text-center"
-                  min="1"
-                />
-              </td>
-              <td className="border px-2 py-1">
-                <input
-                  type="number"
-                  value={item.qty}
-                    onChange={(e) => handleChange(index, "qty", e.target.value)}
-                  className="w-full p-1 text-center"
-                />
-              </td>
-              <td className="border px-2 py-1">
-                <input
-                  type="number"
-                  value={item.rate}
-                    onChange={(e) => handleChange(index, "rate", e.target.value)}
-                  className="w-full p-1 text-center"
-                />
-              </td>
-              <td className="border px-2 py-1 text-center">{item.amount}</td>
-            </tr>
-          ))}
-        </tbody>
+
+  <tbody>
+  {invoiceItems.map((item, index) => (
+    <tr key={index}>
+      <td className="border px-2 py-1 text-center">{index + 1}</td>
+      <td className="border px-2 py-1">
+        <input
+          type="text"
+          value={item.description}
+          onChange={(e) =>
+            handleInputChange(index, "description", e.target.value)
+          }
+          className="w-full p-1"
+        />
+      </td>
+      <td className="border px-2 py-1">
+        <input
+          type="number"
+          value={item.days}
+          onChange={(e) => handleChange(index, "days", e.target.valueAsNumber || 0)}
+          className="w-full p-1 text-center"
+          min="0"
+        />
+      </td>
+      <td className="border px-2 py-1">
+        <input
+          type="number"
+          value={item.qty}
+          onChange={(e) => handleChange(index, "qty", e.target.valueAsNumber || 0)}
+          className="w-full p-1 text-center"
+          min="0"
+        />
+      </td>
+      <td className="border px-2 py-1">
+        <input
+  type="text"
+  value={item.rate}
+  onChange={(e) => handleChange(index, "rate", e.target.value)}
+  className="w-full p-1 text-center"
+/>
+
+      </td>
+      <td className="border px-2 py-1 text-center">{item.amount}</td>
+      <td className="border px-2 py-1 text-center">
+        <button
+          onClick={() => removeItem(index)}
+          className="text-red-600 hover:underline"
+        >
+          Remove
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+
         <tfoot>
           <tr className="bg-gray-100">
             <td colSpan={5} className="border px-2 py-1 text-right font-bold">
