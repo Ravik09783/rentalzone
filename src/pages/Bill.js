@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { ganesha, stamp } from "../assets/base64/base64";
+import { ganesha, paymentQR, stamp } from "../assets/base64/base64";
 import Quotaition from "../components/Quotaition";
 import {
   FaFileInvoice,
@@ -150,7 +150,12 @@ const Bill = () => {
       customerName,
       customerAddress,
       customerPhone,
-      stampImageData
+      stampImageData,
+      '',
+      paymentQR,
+      'Canara Bank',
+      3299101002851,
+      'CNRB0003299'
     );
 
     if (editMode) {
