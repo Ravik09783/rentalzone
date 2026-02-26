@@ -1,4 +1,5 @@
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -15,18 +16,18 @@ const Footer = () => {
               exhibitions, weddings, and corporate events.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <button className="text-gray-300 hover:text-white transition-colors bg-transparent border-none cursor-pointer p-0">
                 <FaFacebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              </button>
+              <button className="text-gray-300 hover:text-white transition-colors bg-transparent border-none cursor-pointer p-0">
                 <FaInstagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              </button>
+              <button className="text-gray-300 hover:text-white transition-colors bg-transparent border-none cursor-pointer p-0">
                 <FaTwitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              </button>
+              <button className="text-gray-300 hover:text-white transition-colors bg-transparent border-none cursor-pointer p-0">
                 <FaLinkedin className="w-5 h-5" />
-              </a>
+              </button>
             </div>
           </div>
 
@@ -34,12 +35,12 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Home</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Services</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Equipment</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Pricing</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-white transition-colors">Services</Link></li>
+              <li><Link to="/equipment" className="text-gray-300 hover:text-white transition-colors">Equipment</Link></li>
+              <li><Link to="/pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</Link></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link></li>
             </ul>
           </div>
 
@@ -89,7 +90,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="border-t border-gray-700 my-6"></div>
 
         {/* Bottom Footer */}
@@ -98,9 +98,9 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} Bhardwaj Electricals. All rights reserved.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Rental Agreement</a>
+            <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</Link>
+            <Link to="/rental-agreement" className="text-gray-400 hover:text-white text-sm transition-colors">Rental Agreement</Link>
           </div>
         </div>
       </div>

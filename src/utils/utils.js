@@ -698,7 +698,7 @@ export const generatePDF = async (
 //* ---------- PAYMENT QR (STAMP STYLE FIX) ---------- */
 
 const pageHeight = doc.internal.pageSize.getHeight();
-const pageWidthQR = doc.internal.pageSize.getWidth();
+// const pageWidthQR = doc.internal.pageSize.getWidth();
 
 // QR size
 const qrWidth = 45;

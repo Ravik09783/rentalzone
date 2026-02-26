@@ -301,7 +301,7 @@ const generatePDF = () => {
 
     // Event Venue
     doc.setFont("helvetica", "bold");
-    doc.text("Event Venue:" + "  ", 14, yPos);
+    doc.text("Event Venue:  ", 14, yPos);
     doc.setFont("helvetica", "normal");
     doc.text(enventVenue, 38, yPos);
     yPos += 10;
