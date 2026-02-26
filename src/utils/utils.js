@@ -889,10 +889,10 @@ export const generatePDF = async (
   const setFill   = ([r, g, b]) => doc.setFillColor(r, g, b);
   const bold      = (sz) => { doc.setFont("helvetica", "bold");   doc.setFontSize(sz); };
   const normal    = (sz) => { doc.setFont("helvetica", "normal"); doc.setFontSize(sz); };
-  const hline     = (y, lw = 0.3) => {
-    doc.setLineWidth(lw);
-    doc.line(ML, y, MR, y);
-  };
+  // const hline     = (y, lw = 0.3) => {
+  //   doc.setLineWidth(lw);
+  //   doc.line(ML, y, MR, y);
+  // };
 
   let y = 8; // start below page border (border is at y=5)
 
