@@ -948,7 +948,7 @@ export const generatePDF = async (
   normal(7.5);
   setColor(DARK);
   // No emoji — plain text label avoids garbage characters
-  doc.text("Addr:", ML + 5, barTextY);
+  doc.text("Address:", ML + 5, barTextY);
   doc.text("Shop No. 3, Jarnail Enclave, Zirakpur, Mohali - 140603", ML + 15, barTextY);
 
   setDraw([180, 190, 220]);
@@ -981,7 +981,7 @@ export const generatePDF = async (
   doc.roundedRect(ML, BADGE_Y, 34, 8, 1.5, 1.5, "F");
   setColor([255, 255, 255]);
   bold(9);
-  doc.text("TAX INVOICE", ML + 17, BADGE_Y + 5.5, { align: "center" });
+  doc.text("INVOICE", ML + 17, BADGE_Y + 5.5, { align: "center" });
 
   // Invoice meta — right side, fully within MR
   const metaX1 = 118;
