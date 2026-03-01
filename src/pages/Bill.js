@@ -39,7 +39,7 @@ const Bill = () => {
     customerName: "",
     customerAddress: "",
     customerPhone: "",
-    isAdmin: Boolean(window.localStorage.getItem("isAdmin")),
+    isAdmin: Boolean(localStorage.getItem("isAdmin")),
     email: "",
     activeTab: "tab1",
     isOpen: false,
@@ -217,7 +217,7 @@ const Bill = () => {
         isAdmin: true,
         error: "",
       }));
-      window.localStorage.setItem("isAdmin", true);
+      localStorage.setItem("isAdmin", true);
     } else {
       setState((prev) => ({
         ...prev,
